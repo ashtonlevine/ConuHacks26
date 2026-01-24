@@ -10,7 +10,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'StuSavvy - AI Financial Guidance Built for Student Life',
+  title: 'SmartPenny - AI Financial Guidance Built for Student Life',
   description: 'Plan your money around semesters, tuition, and part-time income. AI-powered financial guidance designed specifically for college students.',
   generator: 'v0.app',
   icons: {

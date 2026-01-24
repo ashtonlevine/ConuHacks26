@@ -1,13 +1,13 @@
-import { Header } from "@/components/stusavvy/header";
-import { Hero } from "@/components/stusavvy/hero";
-import { Problem } from "@/components/stusavvy/problem";
-import { Features } from "@/components/stusavvy/features";
-import { HowItWorks } from "@/components/stusavvy/how-it-works";
-import { AIExplanation } from "@/components/stusavvy/ai-explanation";
-import { Trust } from "@/components/stusavvy/trust";
-import { Deals } from "@/components/stusavvy/deals";
-import { CTA } from "@/components/stusavvy/cta";
-import { Footer } from "@/components/stusavvy/footer";
+import { Header } from "@/components/smartpenny/header";
+import { Hero } from "@/components/smartpenny/hero";
+import { Problem } from "@/components/smartpenny/problem";
+import { Features } from "@/components/smartpenny/features";
+import { HowItWorks } from "@/components/smartpenny/how-it-works";
+import { AIExplanation } from "@/components/smartpenny/ai-explanation";
+import { Trust } from "@/components/smartpenny/trust";
+import { Deals } from "@/components/smartpenny/deals";
+import { CTA } from "@/components/smartpenny/cta";
+import { Footer } from "@/components/smartpenny/footer";
 
 export default function Home() {
   return (

@@ -18,7 +18,7 @@ export function Footer() {
               </span>
             </div>
             <span className="text-lg font-semibold text-foreground">
-              StuSavvy
+              SmartPenny
             </span>
           </div>
 
@@ -37,10 +37,10 @@ export function Footer() {
 
         <div className="mt-8 border-t border-border pt-8 text-center">
           <p className="text-xs text-muted-foreground">
-            StuSavvy provides educational financial guidance only. Not a licensed financial advisor.
+            SmartPenny provides educational financial guidance only. Not a licensed financial advisor.
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} StuSavvy. All rights reserved.
+            &copy; {new Date().getFullYear()} SmartPenny. All rights reserved.
           </p>
         </div>
       </div>
