@@ -7,19 +7,19 @@ import { cn } from "@/lib/utils";
 
 type Message = { id: string; role: "user" | "assistant"; content: string };
 
-function getMockResponse(query: string): string {
-  const q = query.toLowerCase();
-  if (/\bafford\b|(\$|dollar)\s*\d+|\d+\s*(\$|dollar)/.test(q) || /trip|concert|event|ticket/i.test(q))
-    return "Based on your current balance and upcoming tuition and rent, I’d suggest checking your “After essentials” amount in your budget. For bigger purchases, we can set a small savings goal and see how it affects your semester plan.";
-  if (/\bbudget|spending|spend\b/.test(q))
-    return "Your budget is built around your semester—tuition, rent, and income. You can adjust categories and see how changes affect your runway. Want to open the Budget section to tweak it?";
-  if (/\bsave|saving|cut|reduce\b/.test(q))
-    return "Try the “Smart cost-cutting” insights: we look at your spending and suggest student-friendly swaps (e.g. meal prep vs. dining out, or using nearby deals). I can also run a “what if” on cutting a category by 10–20%.";
-  if (/\btuition|rent|bill\b/.test(q))
-    return "I use your tuition and rent due dates to plan your cash flow. If something’s wrong, update the dates or amounts in your profile—your “Upcoming” and runway will update automatically.";
-  if (/\bdeal|deals|food|eat|restaurant\b/.test(q))
-    return "Check the Deals section for student discounts near campus. You can filter by distance and we’ll flag sponsored offers. I can also help you decide if a deal fits your weekly food budget.";
-  return "I’m your SmartPenny AI assistant. I can help with “Can I afford this?”, budget tweaks, savings goals, and making sense of your semester finances. Ask a specific question to get a tailored answer.";
+async function fetchGeminiReply(
+  messages: { role: "user" | "assistant"; content: string }[]
+): Promise<{ text: string } | { error: string }> {
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: messages.map(({ role, content }) => ({ role, content })),
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) return { error: (data as { error?: string }).error ?? "Request failed." };
+  return { text: (data as { text?: string }).text ?? "" };
 }
 
 const SUGGESTIONS = [
@@ -45,7 +45,7 @@ export function AIChatSidebar() {
     scrollToBottom();
   }, [messages, isThinking]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const text = input.trim();
     if (!text || isThinking) return;
 
@@ -54,14 +54,21 @@ export function AIChatSidebar() {
     setInput("");
     setIsThinking(true);
 
-    setTimeout(() => {
-      const reply = getMockResponse(text);
-      setMessages((m) => [
+    const history = [...messages, userMsg].map(({ role, content }) => ({ role, content }));
+    const result = await fetchGeminiReply(history);
+
+    if ("error" in result) {
+      setMessages((m: Message[]) => [
         ...m,
-        { id: crypto.randomUUID(), role: "assistant", content: reply },
+        { id: crypto.randomUUID(), role: "assistant", content: `Sorry, something went wrong: ${result.error}` },
       ]);
-      setIsThinking(false);
-    }, 600);
+    } else {
+      setMessages((m: Message[]) => [
+        ...m,
+        { id: crypto.randomUUID(), role: "assistant", content: result.text || "I don’t have an answer for that. Try asking about your budget, savings, or deals." },
+      ]);
+    }
+    setIsThinking(false);
   };
 
   const handleSuggestion = (s: string) => {
