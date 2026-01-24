@@ -171,7 +171,7 @@ export default function DashboardPage() {
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
                   <Link
-                    href="/dashboard#deals"
+                    href="/dashboard/deals"
                     className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
                   >
                     <span className="flex items-center gap-2 font-medium">
@@ -219,7 +219,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/#deals">
+                <Link href="/dashboard/deals">
                   View all deals
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
