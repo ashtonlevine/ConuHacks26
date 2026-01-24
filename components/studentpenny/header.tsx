@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,9 +14,13 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-sm font-bold text-primary-foreground">S</span>
-          </div>
+        <Image
+          src="/smartpennies.png"
+          alt="StudentPenny"
+          width={64}
+          height={64}
+          className="h-16 w-16 object-contain"
+        />
           <span className="text-xl font-semibold text-foreground">
             StudentPenny
           </span>
@@ -49,7 +54,6 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          {/* @ts-expect-error - Clerk async component with React 19 */}
           <SignedOut>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/login">Log in</Link>
@@ -58,7 +62,6 @@ export function Header() {
               <Link href="/signup">Try StudentPenny</Link>
             </Button>
           </SignedOut>
-          {/* @ts-expect-error - Clerk async component with React 19 */}
           <SignedIn>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/dashboard">Dashboard</Link>
@@ -120,7 +123,6 @@ export function Header() {
               About
             </Link>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
-              {/* @ts-expect-error - Clerk async component with React 19 */}
               <SignedOut>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/login">Log in</Link>
@@ -129,7 +131,6 @@ export function Header() {
                   <Link href="/signup">Try StudentPenny</Link>
                 </Button>
               </SignedOut>
-              {/* @ts-expect-error - Clerk async component with React 19 */}
               <SignedIn>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/dashboard">Dashboard</Link>
