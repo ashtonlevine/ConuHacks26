@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { DashboardHeader } from "@/components/smartpenny/dashboard-header";
-import { Footer } from "@/components/smartpenny/footer";
-import { AIChatSidebar } from "@/components/smartpenny/ai-chat-sidebar";
+import { DashboardHeader } from "@/components/studentpenny/dashboard-header";
+import { Footer } from "@/components/studentpenny/footer";
+import { AIChatSidebar } from "@/components/studentpenny/ai-chat-sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

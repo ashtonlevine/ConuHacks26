@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 
-const SYSTEM_INSTRUCTION = `You are the SmartPenny AI assistant for students. You help with:
+const SYSTEM_INSTRUCTION = `You are the StudentPenny AI assistant for students. You help with:
 - "Can I afford this?" (concerts, trips, events, purchases)
 - Budget tweaks, spending, and semester planning
 - Savings tips and cost-cutting (e.g. meal prep vs dining out, deals)

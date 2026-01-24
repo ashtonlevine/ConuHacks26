@@ -23,7 +23,7 @@ export function CTA() {
               asChild
             >
               <Link href="/dashboard">
-                Get Started with SmartPenny
+                Get Started with StudentPenny
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>

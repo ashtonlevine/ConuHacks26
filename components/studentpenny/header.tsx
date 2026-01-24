@@ -17,7 +17,7 @@ export function Header() {
             <span className="text-sm font-bold text-primary-foreground">S</span>
           </div>
           <span className="text-xl font-semibold text-foreground">
-            SmartPenny
+            StudentPenny
           </span>
         </Link>
 
@@ -55,7 +55,7 @@ export function Header() {
               <Link href="/login">Log in</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/signup">Try SmartPenny</Link>
+              <Link href="/signup">Try StudentPenny</Link>
             </Button>
           </SignedOut>
           {/* @ts-expect-error - Clerk async component with React 19 */}
@@ -126,7 +126,7 @@ export function Header() {
                   <Link href="/login">Log in</Link>
                 </Button>
                 <Button size="sm" asChild>
-                  <Link href="/signup">Try SmartPenny</Link>
+                  <Link href="/signup">Try StudentPenny</Link>
                 </Button>
               </SignedOut>
               {/* @ts-expect-error - Clerk async component with React 19 */}

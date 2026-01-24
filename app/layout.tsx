@@ -10,7 +10,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'SmartPenny - AI Financial Guidance Built for Student Life',
+  title: 'StudentPenny - AI Financial Guidance Built for Student Life',
   description: 'Plan your money around semesters, tuition, and part-time income. AI-powered financial guidance designed specifically for college students.',
   generator: 'v0.app',
   icons: {
@@ -38,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    // @ts-expect-error - Clerk async server component with React 19
+
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className="font-sans antialiased">
