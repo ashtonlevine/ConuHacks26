@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -48,12 +49,27 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/dashboard">Log in</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/dashboard">Try StuSavvy</Link>
-          </Button>
+          <SignedOut>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/login">Log in</Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link href="/signup">Try StuSavvy</Link>
+            </Button>
+          </SignedOut>
+          <SignedIn>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "h-8 w-8"
+                }
+              }}
+            />
+          </SignedIn>
         </div>
 
         <button
@@ -102,12 +118,30 @@ export function Header() {
               About
             </Link>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/dashboard">Log in</Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href="/dashboard">Try StuSavvy</Link>
-              </Button>
+              <SignedOut>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/login">Log in</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/signup">Try StuSavvy</Link>
+                </Button>
+              </SignedOut>
+              <SignedIn>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <UserButton 
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        avatarBox: "h-8 w-8"
+                      }
+                    }}
+                  />
+                  <span className="text-sm text-muted-foreground">Account</span>
+                </div>
+              </SignedIn>
             </div>
           </nav>
         </div>

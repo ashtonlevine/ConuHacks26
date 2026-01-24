@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LayoutDashboard, Wallet, MapPin } from "lucide-react";
+import { Menu, X, LayoutDashboard, Wallet, MapPin } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -46,15 +47,18 @@ export function DashboardHeader() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" size="icon-sm" asChild>
-            <Link href="/dashboard" aria-label="Account">
-              <User className="h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="hidden items-center gap-3 md:flex">
           <Button variant="outline" size="sm" asChild>
             <Link href="/">Home</Link>
           </Button>
+          <UserButton 
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: "h-8 w-8"
+              }
+            }}
+          />
         </div>
 
         <button
@@ -89,6 +93,17 @@ export function DashboardHeader() {
               <Button variant="outline" size="sm" asChild>
                 <Link href="/">Home</Link>
               </Button>
+              <div className="flex items-center gap-2 px-3 py-2">
+                <UserButton 
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-8 w-8"
+                    }
+                  }}
+                />
+                <span className="text-sm text-muted-foreground">Account</span>
+              </div>
             </div>
           </nav>
         </div>
