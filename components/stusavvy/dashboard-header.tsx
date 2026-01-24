@@ -29,7 +29,8 @@ export function DashboardHeader() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith("/dashboard"));
+            // Only highlight the main Dashboard link; hash-based section links stay unhighlighted
+            const isActive = pathname === "/dashboard" && item.href === "/dashboard";
             return (
               <Link
                 key={item.href}
