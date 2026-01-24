@@ -49,6 +49,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          {/* @ts-expect-error - Clerk async component with React 19 */}
           <SignedOut>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/login">Log in</Link>
@@ -57,6 +58,7 @@ export function Header() {
               <Link href="/signup">Try SmartPenny</Link>
             </Button>
           </SignedOut>
+          {/* @ts-expect-error - Clerk async component with React 19 */}
           <SignedIn>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/dashboard">Dashboard</Link>
@@ -118,6 +120,7 @@ export function Header() {
               About
             </Link>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
+              {/* @ts-expect-error - Clerk async component with React 19 */}
               <SignedOut>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/login">Log in</Link>
@@ -126,6 +129,7 @@ export function Header() {
                   <Link href="/signup">Try SmartPenny</Link>
                 </Button>
               </SignedOut>
+              {/* @ts-expect-error - Clerk async component with React 19 */}
               <SignedIn>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/dashboard">Dashboard</Link>
