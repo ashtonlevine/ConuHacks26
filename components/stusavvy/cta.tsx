@@ -22,7 +22,7 @@ export function CTA() {
               className="gap-2 text-base"
               asChild
             >
-              <Link href="#">
+              <Link href="/dashboard">
                 Get Started with StuSavvy
                 <ArrowRight className="h-4 w-4" />
               </Link>
