@@ -49,7 +49,7 @@ export default function SignupPage() {
         routing="path"
         path="/signup"
         signInUrl="/login"
-        forceRedirectUrl="/"
+        afterSignUpUrl="/dashboard"
       />
 
       <p className="mt-6 text-center">

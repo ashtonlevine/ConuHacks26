@@ -58,6 +58,9 @@ export function Header() {
             </Button>
           </SignedOut>
           <SignedIn>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard">Dashboard</Link>
+            </Button>
             <UserButton 
               afterSignOutUrl="/"
               appearance={{
@@ -124,6 +127,9 @@ export function Header() {
                 </Button>
               </SignedOut>
               <SignedIn>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
                 <div className="flex items-center gap-2 px-3 py-2">
                   <UserButton 
                     afterSignOutUrl="/"
