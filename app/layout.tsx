@@ -38,6 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
+    // @ts-expect-error - Clerk async server component with React 19
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className="font-sans antialiased">
