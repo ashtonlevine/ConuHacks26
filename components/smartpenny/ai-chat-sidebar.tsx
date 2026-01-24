@@ -19,7 +19,7 @@ function getMockResponse(query: string): string {
     return "I use your tuition and rent due dates to plan your cash flow. If something’s wrong, update the dates or amounts in your profile—your “Upcoming” and runway will update automatically.";
   if (/\bdeal|deals|food|eat|restaurant\b/.test(q))
     return "Check the Deals section for student discounts near campus. You can filter by distance and we’ll flag sponsored offers. I can also help you decide if a deal fits your weekly food budget.";
-  return "I’m your StuSavvy AI assistant. I can help with “Can I afford this?”, budget tweaks, savings goals, and making sense of your semester finances. Ask a specific question to get a tailored answer.";
+  return "I’m your SmartPenny AI assistant. I can help with “Can I afford this?”, budget tweaks, savings goals, and making sense of your semester finances. Ask a specific question to get a tailored answer.";
 }
 
 const SUGGESTIONS = [

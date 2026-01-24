@@ -9,7 +9,7 @@ const steps = [
     number: "02",
     title: "Get your plan",
     description:
-      "StuSavvy builds a semester-long financial plan tailored to your academic calendar.",
+      "SmartPenny builds a semester-long financial plan tailored to your academic calendar.",
   },
   {
     number: "03",

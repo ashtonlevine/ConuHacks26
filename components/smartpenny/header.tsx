@@ -17,7 +17,7 @@ export function Header() {
             <span className="text-sm font-bold text-primary-foreground">S</span>
           </div>
           <span className="text-xl font-semibold text-foreground">
-            StuSavvy
+            SmartPenny
           </span>
         </Link>
 
@@ -54,7 +54,7 @@ export function Header() {
               <Link href="/login">Log in</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/signup">Try StuSavvy</Link>
+              <Link href="/signup">Try SmartPenny</Link>
             </Button>
           </SignedOut>
           <SignedIn>
@@ -123,7 +123,7 @@ export function Header() {
                   <Link href="/login">Log in</Link>
                 </Button>
                 <Button size="sm" asChild>
-                  <Link href="/signup">Try StuSavvy</Link>
+                  <Link href="/signup">Try SmartPenny</Link>
                 </Button>
               </SignedOut>
               <SignedIn>

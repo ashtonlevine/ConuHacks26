@@ -24,7 +24,7 @@ export function DashboardHeader() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <span className="text-sm font-bold text-primary-foreground">S</span>
           </div>
-          <span className="text-xl font-semibold text-foreground">StuSavvy</span>
+          <span className="text-xl font-semibold text-foreground">SmartPenny</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
