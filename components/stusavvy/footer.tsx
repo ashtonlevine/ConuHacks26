@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = [
   { name: "About", href: "#" },
@@ -12,11 +13,13 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-sm font-bold text-primary-foreground">
-                S
-              </span>
-            </div>
+            <Image
+              src="/SmartPennies.png"
+              alt="SmartPenny"
+              width={64}
+              height={64}
+              className="h-16 w-16 object-contain"
+            />
             <span className="text-lg font-semibold text-foreground">
               StuSavvy
             </span>
