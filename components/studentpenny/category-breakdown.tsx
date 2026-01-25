@@ -48,7 +48,7 @@ export function CategoryBreakdown() {
   const [categorySpending, setCategorySpending] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
   
-  const { period, dateRange, periodLabel } = useTimePeriod();
+  const { period, dateRange, periodLabel, refreshKey } = useTimePeriod();
 
   // Fetch budget when period changes (weekly and monthly budgets are separate)
   useEffect(() => {
@@ -66,7 +66,7 @@ export function CategoryBreakdown() {
     fetchBudget();
   }, [period]);
 
-  // Fetch spending data when date range changes
+  // Fetch spending data when date range changes or transactions are added
   useEffect(() => {
     async function fetchSpending() {
       setIsLoading(true);
@@ -89,7 +89,7 @@ export function CategoryBreakdown() {
     }
 
     fetchSpending();
-  }, [dateRange.startDate, dateRange.endDate]);
+  }, [dateRange.startDate, dateRange.endDate, refreshKey]);
 
   if (isLoading) {
     return (

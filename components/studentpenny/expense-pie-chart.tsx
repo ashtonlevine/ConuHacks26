@@ -19,7 +19,7 @@ export function ExpensePieChart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const { dateRange, periodLabel } = useTimePeriod();
+  const { dateRange, periodLabel, refreshKey } = useTimePeriod();
 
   useEffect(() => {
     async function fetchExpenses() {
@@ -62,7 +62,7 @@ export function ExpensePieChart() {
     }
 
     fetchExpenses();
-  }, []);
+  }, [refreshKey]);
 
   if (loading) return <div className="h-[350px] w-full flex items-center justify-center text-muted-foreground">Loading...</div>;
   if (error) return <div className="h-[350px] w-full flex items-center justify-center text-destructive">Error: {error}</div>;
