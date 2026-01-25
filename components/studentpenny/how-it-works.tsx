@@ -3,19 +3,19 @@ const steps = [
     number: "01",
     title: "Enter your details",
     description:
-      "Input your income, rent, tuition, and semester dates. We'll handle the complexity.",
+      "Enter your transactions, budget and saving goals StudentPenny will cover the rest.",
   },
   {
     number: "02",
-    title: "Get your plan",
+    title: "Get tailored analytics ",
     description:
-      "StudentPenny builds a semester-long financial plan tailored to your academic calendar.",
+      "Using your data, StudentPenny provides personalized insights and recommendations to help you manage your finances effectively.",
   },
   {
     number: "03",
     title: "Ask anything",
     description:
-      'Ask "what-if" questions and get clear, actionable guidance instantly.',
+      'With our AI-powered assistant, get specific help in real time by using one of our prompted questions or asking one of your own.',
   },
 ];
 
