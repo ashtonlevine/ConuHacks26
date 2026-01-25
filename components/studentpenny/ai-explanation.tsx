@@ -65,19 +65,6 @@ export function AIExplanation() {
               </div>
             </div>
           </div>
-
-          <div className="mt-6 flex justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={fetchExample}
-              disabled={loading}
-              className="gap-2"
-            >
-              <Sparkles className="h-4 w-4" />
-              {loading ? "Generating…" : "See AI example"}
-            </Button>
-          </div>
           {example && (
             <div className="mt-4 rounded-sm border border-border bg-muted/50 px-4 py-3 text-left text-sm text-muted-foreground">
               {example}
