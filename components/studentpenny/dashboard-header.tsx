@@ -15,6 +15,7 @@ const navItems = [
   { href: "/dashboard#deals", label: "Deals", icon: MapPin },
   { href: "/dashboard#analytics", label: "Analytics", icon: ChartArea },
   { href: "/dashboard#goals", label: "Goals", icon: Target },
+  { href: "/transactions", label: "Transactions", icon: ChartArea },
 ];
 
 export function DashboardHeader() {
