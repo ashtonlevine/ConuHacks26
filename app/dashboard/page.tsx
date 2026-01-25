@@ -210,18 +210,30 @@ export default function DashboardPage() {
       : 0;
     const remaining = goal.target_amount - goal.current_amount;
     
-    // Calculate monthly savings needed if target date exists
-    let monthlyInfo = "";
+    // Calculate savings needed with detailed time breakdown
+    let timeInfo = "";
     if (goal.target_date && remaining > 0) {
       const targetDate = new Date(goal.target_date);
       const today = new Date();
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const daysRemaining = Math.max(Math.ceil((targetDate.getTime() - today.getTime()) / msPerDay), 1);
+      const weeksRemaining = Math.max(Math.ceil(daysRemaining / 7), 1);
       const monthsRemaining = Math.max(
         (targetDate.getFullYear() - today.getFullYear()) * 12 +
           (targetDate.getMonth() - today.getMonth()),
         1
       );
+      
+      const dailySavings = remaining / daysRemaining;
+      const weeklySavings = remaining / weeksRemaining;
       const monthlySavings = remaining / monthsRemaining;
-      monthlyInfo = `I have ${monthsRemaining} month(s) until my target date (${targetDate.toLocaleDateString()}). I would need to save $${monthlySavings.toFixed(2)} per month to reach this goal.`;
+      
+      timeInfo = `**Target Date:** ${targetDate.toLocaleDateString()}
+**Days Remaining:** ${daysRemaining} day${daysRemaining > 1 ? 's' : ''}
+**Savings Required:**
+- Daily: $${dailySavings.toFixed(2)}/day
+- Weekly: $${weeklySavings.toFixed(2)}/week (${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''})
+- Monthly: $${monthlySavings.toFixed(2)}/month (${monthsRemaining} month${monthsRemaining > 1 ? 's' : ''})`;
     }
 
     const message = `Please analyze my savings goal and give me a solid plan to reach it:
@@ -232,7 +244,7 @@ export default function DashboardPage() {
 **Currently Saved:** $${goal.current_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 **Remaining:** $${remaining.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 **Progress:** ${progress.toFixed(1)}% complete
-${monthlyInfo ? `\n${monthlyInfo}` : goal.target_date ? `\n**Target Date:** ${new Date(goal.target_date).toLocaleDateString()}` : ""}
+${timeInfo ? `\n${timeInfo}` : goal.target_date ? `\n**Target Date:** ${new Date(goal.target_date).toLocaleDateString()}` : ""}
 
 Please provide practical advice on how I can reach this goal, any tips specific to this type of savings goal, and a realistic action plan.`;
 
@@ -539,17 +551,45 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                     : 0;
                   const remaining = goal.target_amount - goal.current_amount;
                   
-                  // Calculate monthly savings needed if target date exists
-                  let monthlySavings = null;
+                  // Calculate savings needed based on time period and remaining time
+                  let savingsInfo: { amount: number; unit: string; message: string } | null = null;
                   if (goal.target_date && remaining > 0) {
                     const targetDate = new Date(goal.target_date);
                     const today = new Date();
+                    const msPerDay = 24 * 60 * 60 * 1000;
+                    const daysRemaining = Math.max(Math.ceil((targetDate.getTime() - today.getTime()) / msPerDay), 1);
+                    const weeksRemaining = Math.max(Math.ceil(daysRemaining / 7), 1);
                     const monthsRemaining = Math.max(
                       (targetDate.getFullYear() - today.getFullYear()) * 12 +
                         (targetDate.getMonth() - today.getMonth()),
                       1
                     );
-                    monthlySavings = remaining / monthsRemaining;
+                    
+                    // Determine the best unit based on time remaining and selected period
+                    if (daysRemaining <= 7) {
+                      // Less than a week - show daily savings needed
+                      savingsInfo = {
+                        amount: remaining / daysRemaining,
+                        unit: daysRemaining === 1 ? "today" : "day",
+                        message: daysRemaining === 1 
+                          ? `You need $${remaining.toFixed(2)} today to reach your goal`
+                          : `Save $${(remaining / daysRemaining).toFixed(2)}/day for ${daysRemaining} days`
+                      };
+                    } else if (period === "weekly" || daysRemaining <= 30) {
+                      // Weekly view or less than a month - show weekly savings
+                      savingsInfo = {
+                        amount: remaining / weeksRemaining,
+                        unit: "week",
+                        message: `Save $${(remaining / weeksRemaining).toFixed(2)}/week for ${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''}`
+                      };
+                    } else {
+                      // Monthly view with more than a month remaining
+                      savingsInfo = {
+                        amount: remaining / monthsRemaining,
+                        unit: "month",
+                        message: `Save $${(remaining / monthsRemaining).toFixed(2)}/month for ${monthsRemaining} month${monthsRemaining > 1 ? 's' : ''}`
+                      };
+                    }
                   }
 
                   return (
@@ -609,10 +649,14 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                             </div>
                           )}
                           
-                          {monthlySavings && monthlySavings > 0 && (
+                          {savingsInfo && (
                             <div className="rounded-sm bg-muted/50 p-2">
                               <p className="text-xs text-muted-foreground">
-                                Save <span className="font-semibold text-primary">${monthlySavings.toFixed(2)}/month</span> to reach your goal
+                                {savingsInfo.unit === "today" ? (
+                                  <>You need <span className="font-semibold text-primary">${remaining.toFixed(2)}</span> today to reach your goal</>
+                                ) : (
+                                  <>Save <span className="font-semibold text-primary">${savingsInfo.amount.toFixed(2)}/{savingsInfo.unit}</span> to reach your goal</>
+                                )}
                               </p>
                             </div>
                           )}
