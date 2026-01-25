@@ -1,26 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-type Message = { id: string; role: "user" | "assistant"; content: string };
-
-async function fetchGeminiReply(
-  messages: { role: "user" | "assistant"; content: string }[]
-): Promise<{ text: string } | { error: string }> {
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messages: messages.map(({ role, content }) => ({ role, content })),
-    }),
-  });
-  const data = await res.json();
-  if (!res.ok) return { error: (data as { error?: string }).error ?? "Request failed." };
-  return { text: (data as { text?: string }).text ?? "" };
-}
+import { useAIChat } from "./ai-chat-context";
 
 const SUGGESTIONS = [
   "Can I afford a $50 concert ticket?",
@@ -29,11 +13,17 @@ const SUGGESTIONS = [
 ];
 
 export function AIChatSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isPinned, setIsPinned] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [isThinking, setIsThinking] = useState(false);
+  const {
+    isOpen,
+    setIsOpen,
+    messages,
+    input,
+    setInput,
+    isThinking,
+    sendMessage,
+  } = useAIChat();
+
+  const [isPinned, setIsPinned] = React.useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -45,30 +35,15 @@ export function AIChatSidebar() {
     scrollToBottom();
   }, [messages, isThinking]);
 
-  const handleSend = async () => {
-    const text = input.trim();
-    if (!text || isThinking) return;
-
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text };
-    setMessages((m) => [...m, userMsg]);
-    setInput("");
-    setIsThinking(true);
-
-    const history = [...messages, userMsg].map(({ role, content }) => ({ role, content }));
-    const result = await fetchGeminiReply(history);
-
-    if ("error" in result) {
-      setMessages((m: Message[]) => [
-        ...m,
-        { id: crypto.randomUUID(), role: "assistant", content: `Sorry, something went wrong: ${result.error}` },
-      ]);
-    } else {
-      setMessages((m: Message[]) => [
-        ...m,
-        { id: crypto.randomUUID(), role: "assistant", content: result.text || "I don’t have an answer for that. Try asking about your budget, savings, or deals." },
-      ]);
+  // Keep sidebar pinned when it's opened programmatically
+  useEffect(() => {
+    if (isOpen) {
+      setIsPinned(true);
     }
-    setIsThinking(false);
+  }, [isOpen]);
+
+  const handleSend = async () => {
+    await sendMessage(input);
   };
 
   const handleSuggestion = (s: string) => {

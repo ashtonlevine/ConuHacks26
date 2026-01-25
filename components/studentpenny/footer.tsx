@@ -2,9 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 
 const footerLinks = [
-  { name: "About", href: "#" },
-  { name: "Privacy", href: "#" },
-  { name: "Contact", href: "#" },
+  { name: "About", href: "/about" },
+  { name: "Privacy", href: "/privacy" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export function Footer() {
