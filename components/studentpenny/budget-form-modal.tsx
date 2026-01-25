@@ -39,9 +39,12 @@ const budgetSchema = z.object({
 
 type BudgetFormData = z.infer<typeof budgetSchema>;
 
+export type PeriodType = "weekly" | "monthly";
+
 export interface Budget {
   id?: string;
   user_id?: string;
+  period_type?: PeriodType;
   restaurant_expenses: number;
   gas: number;
   grocery_shopping: number;
@@ -58,6 +61,7 @@ interface BudgetFormModalProps {
   onOpenChange: (open: boolean) => void;
   existingBudget: Budget | null;
   onBudgetSaved: (budget: Budget) => void;
+  periodType?: PeriodType;
 }
 
 const budgetCategories = [
@@ -110,6 +114,7 @@ export function BudgetFormModal({
   onOpenChange,
   existingBudget,
   onBudgetSaved,
+  periodType = "monthly",
 }: BudgetFormModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -154,7 +159,10 @@ export function BudgetFormModal({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          period_type: periodType,
+        }),
       });
 
       if (!response.ok) {
@@ -163,7 +171,7 @@ export function BudgetFormModal({
       }
 
       const { budget } = await response.json();
-      toast.success("Budget saved successfully!");
+      toast.success(`${periodType === "weekly" ? "Weekly" : "Monthly"} budget saved successfully!`);
       onBudgetSaved(budget);
       onOpenChange(false);
     } catch (error) {
@@ -175,6 +183,8 @@ export function BudgetFormModal({
       setIsSubmitting(false);
     }
   };
+  
+  const periodLabel = periodType === "weekly" ? "weekly" : "monthly";
 
   const totalBudget = budgetCategories.reduce((sum, category) => {
     const value = existingBudget?.[category.name] || 0;
@@ -186,10 +196,10 @@ export function BudgetFormModal({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {existingBudget ? "Edit Your Budget" : "Set Up Your Budget"}
+            {existingBudget ? `Edit Your ${periodType === "weekly" ? "Weekly" : "Monthly"} Budget` : `Set Up Your ${periodType === "weekly" ? "Weekly" : "Monthly"} Budget`}
           </DialogTitle>
           <DialogDescription>
-            Enter your monthly budget allocation for each category. This helps
+            Enter your {periodLabel} budget allocation for each category. This helps
             track your spending and reach your financial goals.
           </DialogDescription>
         </DialogHeader>

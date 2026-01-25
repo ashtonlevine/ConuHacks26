@@ -6,6 +6,8 @@ import { DashboardHeader } from "@/components/studentpenny/dashboard-header";
 import { Footer } from "@/components/studentpenny/footer";
 import { AIChatSidebar } from "@/components/studentpenny/ai-chat-sidebar";
 import { useAIChat } from "@/components/studentpenny/ai-chat-context";
+import { useTimePeriod } from "@/components/studentpenny/time-period-context";
+import { TimePeriodToggle } from "@/components/studentpenny/time-period-toggle";
 import { BudgetFormModal, Budget } from "@/components/studentpenny/budget-form-modal";
 import { GoalFormModal, Goal } from "@/components/studentpenny/goal-form-modal";
 import { TransactionFormModal, Transaction } from "@/components/studentpenny/transaction-form-modal";
@@ -71,6 +73,10 @@ export default function DashboardPage() {
   
   // AI Chat context
   const { sendMessage, isThinking } = useAIChat();
+  
+  // Time period context
+  const { period, dateRange, periodLabel } = useTimePeriod();
+  
   const [budget, setBudget] = useState<Budget | null>(null);
   const [isLoadingBudget, setIsLoadingBudget] = useState(true);
   
@@ -86,22 +92,8 @@ export default function DashboardPage() {
   const [isLoadingSummary, setIsLoadingSummary] = useState(true);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
 
-  // Fetch existing budget, goals, and transactions on mount
+  // Fetch goals and recent transactions on mount
   useEffect(() => {
-    async function fetchBudget() {
-      try {
-        const response = await fetch("/api/budget");
-        if (response.ok) {
-          const data = await response.json();
-          setBudget(data.budget);
-        }
-      } catch (error) {
-        console.error("Error fetching budget:", error);
-      } finally {
-        setIsLoadingBudget(false);
-      }
-    }
-
     async function fetchGoals() {
       try {
         const response = await fetch("/api/goals");
@@ -113,20 +105,6 @@ export default function DashboardPage() {
         console.error("Error fetching goals:", error);
       } finally {
         setIsLoadingGoals(false);
-      }
-    }
-
-    async function fetchTransactionSummary() {
-      try {
-        const response = await fetch("/api/transactions/summary");
-        if (response.ok) {
-          const data = await response.json();
-          setFinancialSummary(data.summary);
-        }
-      } catch (error) {
-        console.error("Error fetching transaction summary:", error);
-      } finally {
-        setIsLoadingSummary(false);
       }
     }
 
@@ -142,11 +120,53 @@ export default function DashboardPage() {
       }
     }
 
-    fetchBudget();
     fetchGoals();
-    fetchTransactionSummary();
     fetchRecentTransactions();
   }, []);
+
+  // Fetch budget when period changes (weekly or monthly budgets are separate)
+  useEffect(() => {
+    async function fetchBudget() {
+      setIsLoadingBudget(true);
+      try {
+        const response = await fetch(`/api/budget?periodType=${period}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBudget(data.budget);
+        }
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      } finally {
+        setIsLoadingBudget(false);
+      }
+    }
+
+    fetchBudget();
+  }, [period]);
+
+  // Fetch transaction summary when date range changes
+  useEffect(() => {
+    async function fetchTransactionSummary() {
+      setIsLoadingSummary(true);
+      try {
+        const params = new URLSearchParams({
+          startDate: dateRange.startDate,
+          endDate: dateRange.endDate,
+        });
+        const response = await fetch(`/api/transactions/summary?${params}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFinancialSummary(data.summary);
+        }
+      } catch (error) {
+        console.error("Error fetching transaction summary:", error);
+      } finally {
+        setIsLoadingSummary(false);
+      }
+    }
+
+    fetchTransactionSummary();
+  }, [dateRange.startDate, dateRange.endDate]);
 
   const handleBudgetSaved = (savedBudget: Budget) => {
     setBudget(savedBudget);
@@ -222,8 +242,12 @@ Please provide practical advice on how I can reach this goal, any tips specific 
   const handleTransactionSaved = async (transaction: Transaction) => {
     // Refresh summary and recent transactions
     try {
+      const params = new URLSearchParams({
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+      });
       const [summaryRes, transactionsRes] = await Promise.all([
-        fetch("/api/transactions/summary"),
+        fetch(`/api/transactions/summary?${params}`),
         fetch("/api/transactions?limit=5"),
       ]);
       
@@ -264,8 +288,11 @@ Please provide practical advice on how I can reach this goal, any tips specific 
         {/* Overview cards */}
         <section className="py-8 sm:py-10">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Overview</h2>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <h2 className="text-lg font-semibold text-foreground">Overview</h2>
+                <TimePeriodToggle />
+              </div>
               <Button
                 variant="outline"
                 size="sm"
@@ -298,7 +325,7 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                     <TrendingUp className="h-4 w-4 text-primary" />
-                    This month — Income
+                    {periodLabel} — Income
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -316,7 +343,7 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                     <TrendingDown className="h-4 w-4" />
-                    This month — Spending
+                    {periodLabel} — Spending
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -376,12 +403,12 @@ Please provide practical advice on how I can reach this goal, any tips specific 
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                  Budget
+                  {period === "weekly" ? "Weekly" : "Monthly"} Budget
                 </h2>
                 <p className="mt-2 text-muted-foreground">
                   {budget
-                    ? "Your monthly budget allocation by category"
-                    : "Set up your budget to track spending by category"}
+                    ? `Your ${period === "weekly" ? "weekly" : "monthly"} budget allocation by category`
+                    : `Set up your ${period === "weekly" ? "weekly" : "monthly"} budget to track spending by category`}
                 </p>
               </div>
               {budget && (
@@ -409,7 +436,7 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                   <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                       <Wallet className="h-4 w-4" />
-                      Total Monthly Budget
+                      Total {period === "weekly" ? "Weekly" : "Monthly"} Budget
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -636,6 +663,7 @@ Please provide practical advice on how I can reach this goal, any tips specific 
         onOpenChange={setBudgetModalOpen}
         existingBudget={budget}
         onBudgetSaved={handleBudgetSaved}
+        periodType={period}
       />
 
       {/* Goal Form Modal */}

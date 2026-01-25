@@ -10,6 +10,7 @@ import {
   ResponsiveContainer, 
   Legend 
 } from "recharts";
+import { useTimePeriod, calculateHistoricalDateRange, getWeekLabel, getMonthLabel } from "./time-period-context";
 
 type Transaction = {
   amount: number;
@@ -18,20 +19,41 @@ type Transaction = {
 };
 
 type ChartData = {
-  month: string;
+  label: string;
   income: number;
   expenses: number;
+  sortKey: number;
 };
 
-function getMonthLabel(dateStr: string) {
+function getStartOfWeek(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day;
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function getWeekKey(dateStr: string): string {
   const date = new Date(dateStr);
-  return date.toLocaleString("en-US", { month: "short", year: "2-digit" });
+  const startOfWeek = getStartOfWeek(date);
+  return startOfWeek.toISOString().split("T")[0];
+}
+
+function getMonthKey(dateStr: string): string {
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
 export function IncomeExpenseChart() {
   const [data, setData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const { period } = useTimePeriod();
+  
+  // Get historical date range based on period (6 weeks or 6 months)
+  const historicalRange = calculateHistoricalDateRange(period, 6);
 
   useEffect(() => {
     async function fetchData() {
@@ -39,8 +61,11 @@ export function IncomeExpenseChart() {
       setError(null);
 
       try {
-        // Use secure API route instead of direct Supabase access
-        const response = await fetch("/api/transactions");
+        const params = new URLSearchParams({
+          startDate: historicalRange.startDate,
+          endDate: historicalRange.endDate,
+        });
+        const response = await fetch(`/api/transactions?${params}`);
 
         if (!response.ok) {
           if (response.status === 401) {
@@ -52,26 +77,39 @@ export function IncomeExpenseChart() {
 
         const { transactions } = await response.json();
 
-        // Group by month
-        const grouped: { [month: string]: ChartData } = {};
+        // Group by week or month based on period
+        const grouped: { [key: string]: ChartData } = {};
+        
         transactions.forEach((t: Transaction) => {
-          const month = getMonthLabel(t.transaction_date);
-          if (!grouped[month]) {
-            grouped[month] = { month, income: 0, expenses: 0 };
+          let key: string;
+          let label: string;
+          let sortKey: number;
+          
+          if (period === "weekly") {
+            key = getWeekKey(t.transaction_date);
+            const weekStart = new Date(key);
+            label = getWeekLabel(weekStart);
+            sortKey = weekStart.getTime();
+          } else {
+            key = getMonthKey(t.transaction_date);
+            const date = new Date(t.transaction_date);
+            label = getMonthLabel(date);
+            sortKey = new Date(key + "-01").getTime();
           }
+          
+          if (!grouped[key]) {
+            grouped[key] = { label, income: 0, expenses: 0, sortKey };
+          }
+          
           if (t.type === "income") {
-            grouped[month].income += Number(t.amount);
+            grouped[key].income += Number(t.amount);
           } else if (t.type === "expense") {
-            grouped[month].expenses += Number(t.amount);
+            grouped[key].expenses += Number(t.amount);
           }
         });
 
         // Sort by date
-        const sorted = Object.values(grouped).sort(
-          (a, b) =>
-            new Date("20" + a.month.split(" ")[1] + "-" + a.month.split(" ")[0] + "-01").getTime() -
-            new Date("20" + b.month.split(" ")[1] + "-" + b.month.split(" ")[0] + "-01").getTime()
-        );
+        const sorted = Object.values(grouped).sort((a, b) => a.sortKey - b.sortKey);
         setData(sorted);
       } catch (err) {
         console.error("Error fetching transactions:", err);
@@ -82,7 +120,7 @@ export function IncomeExpenseChart() {
     }
 
     fetchData();
-  }, []);
+  }, [period, historicalRange.startDate, historicalRange.endDate]);
 
   if (loading) {
     return (
@@ -117,7 +155,7 @@ export function IncomeExpenseChart() {
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
           <XAxis 
-            dataKey="month" 
+            dataKey="label" 
             axisLine={false} 
             tickLine={false} 
             tick={{ fill: '#64748b', fontSize: 12 }} 
