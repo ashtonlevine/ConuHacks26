@@ -210,43 +210,89 @@ export default function DashboardPage() {
       : 0;
     const remaining = goal.target_amount - goal.current_amount;
     
-    // Calculate savings needed with detailed time breakdown
-    let timeInfo = "";
-    if (goal.target_date && remaining > 0) {
-      const targetDate = new Date(goal.target_date);
-      const today = new Date();
-      const msPerDay = 24 * 60 * 60 * 1000;
-      const daysRemaining = Math.max(Math.ceil((targetDate.getTime() - today.getTime()) / msPerDay), 1);
-      const weeksRemaining = Math.max(Math.ceil(daysRemaining / 7), 1);
-      const monthsRemaining = Math.max(
-        (targetDate.getFullYear() - today.getFullYear()) * 12 +
-          (targetDate.getMonth() - today.getMonth()),
-        1
-      );
-      
-      const dailySavings = remaining / daysRemaining;
-      const weeklySavings = remaining / weeksRemaining;
-      const monthlySavings = remaining / monthsRemaining;
-      
-      timeInfo = `**Target Date:** ${targetDate.toLocaleDateString()}
-**Days Remaining:** ${daysRemaining} day${daysRemaining > 1 ? 's' : ''}
-**Savings Required:**
-- Daily: $${dailySavings.toFixed(2)}/day
-- Weekly: $${weeklySavings.toFixed(2)}/week (${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''})
-- Monthly: $${monthlySavings.toFixed(2)}/month (${monthsRemaining} month${monthsRemaining > 1 ? 's' : ''})`;
-    }
-
-    const message = `Please analyze my savings goal and give me a solid plan to reach it:
+    // Handle edge case: goal already reached
+    if (remaining <= 0) {
+      const message = `I've reached my savings goal! Please congratulate me and give advice on what to do next:
 
 **Goal:** ${goal.name}
 **Category:** ${goal.category.replace(/_/g, " ")}
 **Target Amount:** $${goal.target_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 **Currently Saved:** $${goal.current_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-**Remaining:** $${remaining.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-**Progress:** ${progress.toFixed(1)}% complete
-${timeInfo ? `\n${timeInfo}` : goal.target_date ? `\n**Target Date:** ${new Date(goal.target_date).toLocaleDateString()}` : ""}
+**Progress:** ${progress.toFixed(1)}% complete (Goal reached!)
+${goal.target_date ? `**Target Date:** ${new Date(goal.target_date).toLocaleDateString()}` : ""}
 
-Please provide practical advice on how I can reach this goal, any tips specific to this type of savings goal, and a realistic action plan.`;
+What should I do now that I've reached this goal? Any tips for maintaining savings or setting new goals?`;
+      sendMessage(message);
+      return;
+    }
+    
+    // Calculate savings needed with detailed time breakdown
+    let timeInfo = "";
+    let urgencyNote = "";
+    
+    if (goal.target_date) {
+      const targetDate = new Date(goal.target_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      targetDate.setHours(0, 0, 0, 0);
+      
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const daysRemaining = Math.ceil((targetDate.getTime() - today.getTime()) / msPerDay);
+      
+      // Handle edge case: target date has passed
+      if (daysRemaining < 0) {
+        const daysOverdue = Math.abs(daysRemaining);
+        urgencyNote = `**⚠️ OVERDUE:** This goal's target date was ${daysOverdue} day${daysOverdue > 1 ? 's' : ''} ago!`;
+        timeInfo = `**Target Date:** ${targetDate.toLocaleDateString()} (PASSED)
+**Days Overdue:** ${daysOverdue} day${daysOverdue > 1 ? 's' : ''}
+**Still Needed:** $${remaining.toFixed(2)}`;
+      } 
+      // Handle edge case: target date is today
+      else if (daysRemaining === 0) {
+        urgencyNote = `**⚠️ URGENT:** Today is the target date!`;
+        timeInfo = `**Target Date:** ${targetDate.toLocaleDateString()} (TODAY!)
+**Amount Needed Today:** $${remaining.toFixed(2)}`;
+      }
+      // Normal case: future target date
+      else {
+        const weeksRemaining = Math.max(Math.ceil(daysRemaining / 7), 1);
+        const monthsRemaining = Math.max(
+          Math.ceil(daysRemaining / 30),
+          1
+        );
+        
+        const dailySavings = remaining / daysRemaining;
+        const weeklySavings = remaining / weeksRemaining;
+        const monthlySavings = remaining / monthsRemaining;
+        
+        // Add urgency note for short deadlines
+        if (daysRemaining <= 7) {
+          urgencyNote = `**⚠️ URGENT:** Only ${daysRemaining} day${daysRemaining > 1 ? 's' : ''} left! Focus on DAILY savings.`;
+        } else if (daysRemaining <= 14) {
+          urgencyNote = `**⏰ TIME-SENSITIVE:** About ${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''} left. Focus on WEEKLY savings.`;
+        }
+        
+        timeInfo = `**Target Date:** ${targetDate.toLocaleDateString()}
+**Time Remaining:** ${daysRemaining} day${daysRemaining > 1 ? 's' : ''} (${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''})
+**Realistic Savings Plan:**
+- To reach goal: Save $${dailySavings.toFixed(2)}/day for ${daysRemaining} days
+- Or: Save $${weeklySavings.toFixed(2)}/week for ${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''}
+${monthsRemaining > 1 ? `- Or: Save $${monthlySavings.toFixed(2)}/month for ${monthsRemaining} months` : ''}`;
+      }
+    }
+
+    const message = `Please analyze my savings goal and give me a realistic, actionable plan:
+
+**Goal:** ${goal.name}
+**Category:** ${goal.category.replace(/_/g, " ")}
+**Target Amount:** $${goal.target_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+**Currently Saved:** $${goal.current_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+**Still Needed:** $${remaining.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+**Progress:** ${progress.toFixed(1)}% complete
+${urgencyNote ? `\n${urgencyNote}` : ''}
+${timeInfo ? `\n${timeInfo}` : goal.target_date ? `\n**Target Date:** ${new Date(goal.target_date).toLocaleDateString()}` : "**No target date set**"}
+
+IMPORTANT: Base your advice on the ACTUAL time remaining shown above. If there are only a few days left, give daily action items, not monthly plans. Be realistic about what can be achieved in the remaining time.`;
 
     sendMessage(message);
   };
@@ -550,44 +596,74 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                     ? (goal.current_amount / goal.target_amount) * 100 
                     : 0;
                   const remaining = goal.target_amount - goal.current_amount;
+                  const isGoalReached = remaining <= 0;
                   
-                  // Calculate savings needed based on time period and remaining time
-                  let savingsInfo: { amount: number; unit: string; message: string } | null = null;
-                  if (goal.target_date && remaining > 0) {
+                  // Calculate savings info with edge case handling
+                  let savingsDisplay: { text: string; isUrgent: boolean; isOverdue: boolean; isSuccess: boolean } | null = null;
+                  
+                  if (isGoalReached) {
+                    // Goal reached!
+                    savingsDisplay = {
+                      text: "Goal reached! Congratulations!",
+                      isUrgent: false,
+                      isOverdue: false,
+                      isSuccess: true
+                    };
+                  } else if (goal.target_date) {
                     const targetDate = new Date(goal.target_date);
                     const today = new Date();
-                    const msPerDay = 24 * 60 * 60 * 1000;
-                    const daysRemaining = Math.max(Math.ceil((targetDate.getTime() - today.getTime()) / msPerDay), 1);
-                    const weeksRemaining = Math.max(Math.ceil(daysRemaining / 7), 1);
-                    const monthsRemaining = Math.max(
-                      (targetDate.getFullYear() - today.getFullYear()) * 12 +
-                        (targetDate.getMonth() - today.getMonth()),
-                      1
-                    );
+                    // Reset time to compare dates only
+                    today.setHours(0, 0, 0, 0);
+                    targetDate.setHours(0, 0, 0, 0);
                     
-                    // Determine the best unit based on time remaining and selected period
-                    if (daysRemaining <= 7) {
-                      // Less than a week - show daily savings needed
-                      savingsInfo = {
-                        amount: remaining / daysRemaining,
-                        unit: daysRemaining === 1 ? "today" : "day",
-                        message: daysRemaining === 1 
-                          ? `You need $${remaining.toFixed(2)} today to reach your goal`
-                          : `Save $${(remaining / daysRemaining).toFixed(2)}/day for ${daysRemaining} days`
+                    const msPerDay = 24 * 60 * 60 * 1000;
+                    const daysRemaining = Math.ceil((targetDate.getTime() - today.getTime()) / msPerDay);
+                    
+                    if (daysRemaining < 0) {
+                      // Target date has passed
+                      const daysOverdue = Math.abs(daysRemaining);
+                      savingsDisplay = {
+                        text: `Overdue by ${daysOverdue} day${daysOverdue > 1 ? 's' : ''} - $${remaining.toFixed(2)} still needed`,
+                        isUrgent: false,
+                        isOverdue: true,
+                        isSuccess: false
+                      };
+                    } else if (daysRemaining === 0) {
+                      // Target is today
+                      savingsDisplay = {
+                        text: `Due today! Need $${remaining.toFixed(2)}`,
+                        isUrgent: true,
+                        isOverdue: false,
+                        isSuccess: false
+                      };
+                    } else if (daysRemaining <= 7) {
+                      // Less than a week - show daily savings
+                      const dailyAmount = remaining / daysRemaining;
+                      savingsDisplay = {
+                        text: `Save $${dailyAmount.toFixed(2)}/day for ${daysRemaining} day${daysRemaining > 1 ? 's' : ''}`,
+                        isUrgent: daysRemaining <= 3,
+                        isOverdue: false,
+                        isSuccess: false
                       };
                     } else if (period === "weekly" || daysRemaining <= 30) {
                       // Weekly view or less than a month - show weekly savings
-                      savingsInfo = {
-                        amount: remaining / weeksRemaining,
-                        unit: "week",
-                        message: `Save $${(remaining / weeksRemaining).toFixed(2)}/week for ${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''}`
+                      const weeksRemaining = Math.ceil(daysRemaining / 7);
+                      const weeklyAmount = remaining / weeksRemaining;
+                      savingsDisplay = {
+                        text: `Save $${weeklyAmount.toFixed(2)}/week for ${weeksRemaining} week${weeksRemaining > 1 ? 's' : ''}`,
+                        isUrgent: false,
+                        isOverdue: false,
+                        isSuccess: false
                       };
                     } else {
                       // Monthly view with more than a month remaining
-                      savingsInfo = {
-                        amount: remaining / monthsRemaining,
-                        unit: "month",
-                        message: `Save $${(remaining / monthsRemaining).toFixed(2)}/month for ${monthsRemaining} month${monthsRemaining > 1 ? 's' : ''}`
+                      const monthsRemaining = Math.ceil(daysRemaining / 30);
+                      const monthlyAmount = remaining / monthsRemaining;
+                      savingsDisplay = {
+                        text: `Save $${monthlyAmount.toFixed(2)}/month for ${monthsRemaining} month${monthsRemaining > 1 ? 's' : ''}`,
+                        isUrgent: false,
+                        isOverdue: false,
+                        isSuccess: false
                       };
                     }
                   }
@@ -643,20 +719,33 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                           </div>
                           
                           {goal.target_date && (
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <div className={`flex items-center gap-1 text-xs ${savingsDisplay?.isOverdue ? 'text-destructive' : 'text-muted-foreground'}`}>
                               <Calendar className="h-3 w-3" />
                               Target: {new Date(goal.target_date).toLocaleDateString()}
+                              {savingsDisplay?.isOverdue && " (Overdue)"}
                             </div>
                           )}
                           
-                          {savingsInfo && (
-                            <div className="rounded-sm bg-muted/50 p-2">
-                              <p className="text-xs text-muted-foreground">
-                                {savingsInfo.unit === "today" ? (
-                                  <>You need <span className="font-semibold text-primary">${remaining.toFixed(2)}</span> today to reach your goal</>
-                                ) : (
-                                  <>Save <span className="font-semibold text-primary">${savingsInfo.amount.toFixed(2)}/{savingsInfo.unit}</span> to reach your goal</>
-                                )}
+                          {savingsDisplay && (
+                            <div className={`rounded-sm p-2 ${
+                              savingsDisplay.isSuccess 
+                                ? 'bg-primary/10' 
+                                : savingsDisplay.isOverdue 
+                                  ? 'bg-destructive/10' 
+                                  : savingsDisplay.isUrgent 
+                                    ? 'bg-orange-500/10' 
+                                    : 'bg-muted/50'
+                            }`}>
+                              <p className={`text-xs ${
+                                savingsDisplay.isSuccess 
+                                  ? 'text-primary font-semibold' 
+                                  : savingsDisplay.isOverdue 
+                                    ? 'text-destructive' 
+                                    : savingsDisplay.isUrgent 
+                                      ? 'text-orange-600 dark:text-orange-400' 
+                                      : 'text-muted-foreground'
+                              }`}>
+                                {savingsDisplay.text}
                               </p>
                             </div>
                           )}
