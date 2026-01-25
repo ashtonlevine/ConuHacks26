@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { DashboardHeader } from "@/components/smartpenny/dashboard-header";
-import { Footer } from "@/components/smartpenny/footer";
-import { AIChatSidebar } from "@/components/smartpenny/ai-chat-sidebar";
+import { DashboardHeader } from "@/components/studentpenny/dashboard-header";
+import { Footer } from "@/components/studentpenny/footer";
+import { AIChatSidebar } from "@/components/studentpenny/ai-chat-sidebar";
+import { BudgetFormModal, Budget } from "@/components/studentpenny/budget-form-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,12 @@ import {
   PiggyBank,
   Target,
   Star,
+  Utensils,
+  Fuel,
+  ShoppingCart,
+  Gamepad2,
+  GraduationCap,
+  Pencil,
 } from "lucide-react";
 
 // Mock overview data
@@ -40,8 +47,46 @@ const previewDeals = [
   { name: "Bagel Barn", deal: "BOGO Bagels Thursdays", distance: "0.2 mi", rating: 4.6, sponsored: false },
 ];
 
+// Budget category display configuration
+const budgetCategories = [
+  { key: "restaurant_expenses" as const, label: "Restaurants", icon: Utensils },
+  { key: "gas" as const, label: "Gas", icon: Fuel },
+  { key: "grocery_shopping" as const, label: "Groceries", icon: ShoppingCart },
+  { key: "leisure" as const, label: "Leisure", icon: Gamepad2 },
+  { key: "school_fees" as const, label: "School Fees", icon: GraduationCap },
+];
+
 export default function DashboardPage() {
   const [aiPrompt, setAiPrompt] = useState("");
+  const [budgetModalOpen, setBudgetModalOpen] = useState(false);
+  const [budget, setBudget] = useState<Budget | null>(null);
+  const [isLoadingBudget, setIsLoadingBudget] = useState(true);
+
+  // Fetch existing budget on mount
+  useEffect(() => {
+    async function fetchBudget() {
+      try {
+        const response = await fetch("/api/budget");
+        if (response.ok) {
+          const data = await response.json();
+          setBudget(data.budget);
+        }
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      } finally {
+        setIsLoadingBudget(false);
+      }
+    }
+    fetchBudget();
+  }, []);
+
+  const handleBudgetSaved = (savedBudget: Budget) => {
+    setBudget(savedBudget);
+  };
+
+  const totalBudget = budget
+    ? budgetCategories.reduce((sum, cat) => sum + (budget[cat.key] || 0), 0)
+    : 0;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -171,7 +216,7 @@ export default function DashboardPage() {
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
                   <Link
-                    href="/dashboard#deals"
+                    href="/dashboard/deals"
                     className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
                   >
                     <span className="flex items-center gap-2 font-medium">
@@ -219,7 +264,7 @@ export default function DashboardPage() {
                 </p>
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/#deals">
+                <Link href="/dashboard/deals">
                   View all deals
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -262,26 +307,106 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Budget & Goals placeholders (anchor sections for nav) */}
+        {/* Budget Section */}
         <section id="budget" className="scroll-mt-24 py-10 sm:py-14">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-              Budget
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Semester-aware budget and spending by category. (Coming soon.)
-            </p>
-            <Card className="mt-4 border border-dashed border-border">
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <Wallet className="h-10 w-10 text-muted-foreground/50" />
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Connect your accounts or add manual entries to see your budget.
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Budget
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  {budget
+                    ? "Your monthly budget allocation by category"
+                    : "Set up your budget to track spending by category"}
                 </p>
-                <Button variant="outline" size="sm" className="mt-4">
-                  Set up budget
+              </div>
+              {budget && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBudgetModalOpen(true)}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit Budget
                 </Button>
-              </CardContent>
-            </Card>
+              )}
+            </div>
+
+            {isLoadingBudget ? (
+              <Card className="mt-4 border border-border">
+                <CardContent className="flex items-center justify-center py-12">
+                  <p className="text-sm text-muted-foreground">Loading budget...</p>
+                </CardContent>
+              </Card>
+            ) : budget ? (
+              <div className="mt-4 space-y-4">
+                {/* Total Budget Card */}
+                <Card className="border-border bg-card">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                      <Wallet className="h-4 w-4" />
+                      Total Monthly Budget
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-foreground">
+                      ${totalBudget.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Budget Categories Grid */}
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                  {budgetCategories.map((category) => {
+                    const Icon = category.icon;
+                    const amount = budget[category.key] || 0;
+                    const percentage = totalBudget > 0 ? (amount / totalBudget) * 100 : 0;
+                    return (
+                      <Card key={category.key} className="border-border bg-card">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                            <Icon className="h-4 w-4 text-primary" />
+                            {category.label}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-lg font-bold text-foreground">
+                            ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
+                          <div className="mt-2 h-1.5 w-full rounded-full bg-muted">
+                            <div
+                              className="h-1.5 rounded-full bg-primary transition-all"
+                              style={{ width: `${Math.min(percentage, 100)}%` }}
+                            />
+                          </div>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {percentage.toFixed(1)}% of total
+                          </p>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <Card className="mt-4 border border-dashed border-border">
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Wallet className="h-10 w-10 text-muted-foreground/50" />
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Set up your budget to track spending across different categories.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={() => setBudgetModalOpen(true)}
+                  >
+                    Set up budget
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </section>
 
@@ -309,6 +434,14 @@ export default function DashboardPage() {
       </main>
       <Footer />
       <AIChatSidebar />
+
+      {/* Budget Form Modal */}
+      <BudgetFormModal
+        open={budgetModalOpen}
+        onOpenChange={setBudgetModalOpen}
+        existingBudget={budget}
+        onBudgetSaved={handleBudgetSaved}
+      />
     </div>
   );
 }

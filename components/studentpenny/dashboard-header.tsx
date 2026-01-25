@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LayoutDashboard, Wallet, MapPin } from "lucide-react";
+import Image from "next/image";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -21,10 +22,14 @@ export function DashboardHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-sm font-bold text-primary-foreground">S</span>
-          </div>
-          <span className="text-xl font-semibold text-foreground">SmartPenny</span>
+        <Image
+          src="/smartpennies.png"
+          alt="StudentPenny"
+          width={64}
+          height={64}
+          className="h-16 w-16 object-contain"
+        />
+          <span className="text-xl font-semibold text-foreground">StudentPenny</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

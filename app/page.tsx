@@ -1,13 +1,12 @@
-import { Header } from "@/components/smartpenny/header";
-import { Hero } from "@/components/smartpenny/hero";
-import { Problem } from "@/components/smartpenny/problem";
-import { Features } from "@/components/smartpenny/features";
-import { HowItWorks } from "@/components/smartpenny/how-it-works";
-import { AIExplanation } from "@/components/smartpenny/ai-explanation";
-import { Trust } from "@/components/smartpenny/trust";
-import { Deals } from "@/components/smartpenny/deals";
-import { CTA } from "@/components/smartpenny/cta";
-import { Footer } from "@/components/smartpenny/footer";
+import { Header } from "@/components/studentpenny/header";
+import { Hero } from "@/components/studentpenny/hero";
+import { Problem } from "@/components/studentpenny/problem";
+import { Features } from "@/components/studentpenny/features";
+import { HowItWorks } from "@/components/studentpenny/how-it-works";
+import { AIExplanation } from "@/components/studentpenny/ai-explanation";
+import { Trust } from "@/components/studentpenny/trust";
+import { CTA } from "@/components/studentpenny/cta";
+import { Footer } from "@/components/studentpenny/footer";
 
 export default function Home() {
   return (
@@ -17,7 +16,6 @@ export default function Home() {
         <Hero />
         <Problem />
         <Features />
-        <Deals />
         <HowItWorks />
         <AIExplanation />
         <Trust />

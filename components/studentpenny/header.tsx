@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,11 +14,15 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="text-sm font-bold text-primary-foreground">S</span>
-          </div>
+        <Image
+          src="/smartpennies.png"
+          alt="StudentPenny"
+          width={64}
+          height={64}
+          className="h-16 w-16 object-contain"
+        />
           <span className="text-xl font-semibold text-foreground">
-            SmartPenny
+            StudentPenny
           </span>
         </Link>
 
@@ -35,12 +40,6 @@ export function Header() {
             How It Works
           </Link>
           <Link
-            href="#deals"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Deals
-          </Link>
-          <Link
             href="#about"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
@@ -54,7 +53,7 @@ export function Header() {
               <Link href="/login">Log in</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link href="/signup">Try SmartPenny</Link>
+              <Link href="/signup">Try StudentPenny</Link>
             </Button>
           </SignedOut>
           <SignedIn>
@@ -104,13 +103,6 @@ export function Header() {
               How It Works
             </Link>
             <Link
-              href="#deals"
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Deals
-            </Link>
-            <Link
               href="#about"
               className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
@@ -123,7 +115,7 @@ export function Header() {
                   <Link href="/login">Log in</Link>
                 </Button>
                 <Button size="sm" asChild>
-                  <Link href="/signup">Try SmartPenny</Link>
+                  <Link href="/signup">Try StudentPenny</Link>
                 </Button>
               </SignedOut>
               <SignedIn>
