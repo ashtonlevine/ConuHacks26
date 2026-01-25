@@ -328,9 +328,19 @@ export default function DashboardPage() {
         </section>
 
         {/* Charts */}
-        <section className="py-6 sm:py-8">
+        <section id="analytics" className="py-6 sm:py-8">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <ChartTabs />
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Analytics
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  A visual representation of your income and expenses
+                </p>
+              </div>
+              <div className="mt-6">
+                <ChartTabs />
+              </div>
           </div>
         </section>
 
