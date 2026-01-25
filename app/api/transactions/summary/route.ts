@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@/lib/supabase/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const { userId } = await auth();
     
@@ -15,12 +15,16 @@ export async function GET() {
 
     const supabase = await createClient();
     
-    // Get current month's start and end dates
+    // Get date range from query params or default to current month
+    const { searchParams } = new URL(request.url);
+    const startDateParam = searchParams.get("startDate");
+    const endDateParam = searchParams.get("endDate");
+    
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+    const startDate = startDateParam || new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+    const endDate = endDateParam || new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
 
-    // Fetch all transactions for the user
+    // Fetch all transactions for the user (for lifetime totals)
     const { data: allTransactions, error: allError } = await supabase
       .from("transactions")
       .select("amount, type")
@@ -34,23 +38,23 @@ export async function GET() {
       );
     }
 
-    // Fetch this month's transactions
-    const { data: monthTransactions, error: monthError } = await supabase
+    // Fetch transactions for the specified period
+    const { data: periodTransactions, error: periodError } = await supabase
       .from("transactions")
       .select("amount, type, category")
       .eq("user_id", userId)
-      .gte("transaction_date", startOfMonth)
-      .lte("transaction_date", endOfMonth);
+      .gte("transaction_date", startDate)
+      .lte("transaction_date", endDate);
 
-    if (monthError) {
-      console.error("Error fetching monthly transactions:", monthError);
+    if (periodError) {
+      console.error("Error fetching period transactions:", periodError);
       return NextResponse.json(
-        { error: "Failed to fetch monthly transactions" },
+        { error: "Failed to fetch period transactions" },
         { status: 500 }
       );
     }
 
-    // Calculate totals
+    // Calculate lifetime totals
     const totalIncome = (allTransactions || [])
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Number(t.amount), 0);
@@ -59,17 +63,18 @@ export async function GET() {
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
-    const monthlyIncome = (monthTransactions || [])
+    // Calculate period totals
+    const periodIncome = (periodTransactions || [])
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + Number(t.amount), 0);
     
-    const monthlyExpenses = (monthTransactions || [])
+    const periodExpenses = (periodTransactions || [])
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + Number(t.amount), 0);
 
-    // Calculate spending by category for this month
+    // Calculate spending by category for the period
     const categoryBreakdown: Record<string, number> = {};
-    (monthTransactions || [])
+    (periodTransactions || [])
       .filter(t => t.type === 'expense')
       .forEach(t => {
         categoryBreakdown[t.category] = (categoryBreakdown[t.category] || 0) + Number(t.amount);
@@ -80,8 +85,12 @@ export async function GET() {
         balance: totalIncome - totalExpenses,
         totalIncome,
         totalExpenses,
-        monthlyIncome,
-        monthlyExpenses,
+        // Keep monthlyIncome/monthlyExpenses for backward compatibility
+        monthlyIncome: periodIncome,
+        monthlyExpenses: periodExpenses,
+        // Also provide period-specific names
+        periodIncome,
+        periodExpenses,
         categoryBreakdown,
       }
     });

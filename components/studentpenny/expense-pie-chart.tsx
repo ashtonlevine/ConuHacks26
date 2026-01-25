@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { useTimePeriod } from "./time-period-context";
 
 const COLORS = ["#1C8F99", "#63AB9A", "#BCDEF6", "#0D4F55", "#94C1B7"];
 
@@ -9,6 +10,8 @@ export function ExpensePieChart() {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const { dateRange, periodLabel } = useTimePeriod();
 
   useEffect(() => {
     async function fetchExpenses() {
@@ -16,8 +19,13 @@ export function ExpensePieChart() {
       setError(null);
 
       try {
-        // Use secure API route instead of direct Supabase access
-        const response = await fetch("/api/transactions?type=expense");
+        // Use secure API route with date range filtering
+        const params = new URLSearchParams({
+          type: "expense",
+          startDate: dateRange.startDate,
+          endDate: dateRange.endDate,
+        });
+        const response = await fetch(`/api/transactions?${params}`);
 
         if (!response.ok) {
           if (response.status === 401) {
@@ -49,11 +57,11 @@ export function ExpensePieChart() {
     }
 
     fetchExpenses();
-  }, []);
+  }, [dateRange.startDate, dateRange.endDate]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (data.length === 0) return <div>No expenses found.</div>;
+  if (loading) return <div className="h-[350px] w-full flex items-center justify-center text-muted-foreground">Loading...</div>;
+  if (error) return <div className="h-[350px] w-full flex items-center justify-center text-destructive">Error: {error}</div>;
+  if (data.length === 0) return <div className="h-[350px] w-full flex items-center justify-center text-muted-foreground">No expenses found for {periodLabel.toLowerCase()}.</div>;
 
   return (
     <div className="h-[350px] w-full">

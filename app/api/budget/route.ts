@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@/lib/supabase/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const { userId } = await auth();
     
@@ -13,11 +13,16 @@ export async function GET() {
       );
     }
 
+    // Get period_type from query params (default to 'monthly')
+    const { searchParams } = new URL(request.url);
+    const periodType = searchParams.get("periodType") || "monthly";
+
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("budgets")
       .select("*")
       .eq("user_id", userId)
+      .eq("period_type", periodType)
       .single();
 
     if (error && error.code !== "PGRST116") {
@@ -51,16 +56,20 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { restaurant_expenses, gas, grocery_shopping, leisure, school_fees, rent, other } = body;
+    const { restaurant_expenses, gas, grocery_shopping, leisure, school_fees, rent, other, period_type } = body;
+    
+    // Default to 'monthly' if not specified
+    const periodType = period_type || "monthly";
 
     const supabase = await createClient();
     
-    // Upsert: insert if not exists, update if exists
+    // Upsert: insert if not exists, update if exists (based on user_id + period_type)
     const { data, error } = await supabase
       .from("budgets")
       .upsert(
         {
           user_id: userId,
+          period_type: periodType,
           restaurant_expenses: restaurant_expenses || 0,
           gas: gas || 0,
           grocery_shopping: grocery_shopping || 0,
@@ -71,7 +80,7 @@ export async function POST(request: Request) {
           updated_at: new Date().toISOString(),
         },
         {
-          onConflict: "user_id",
+          onConflict: "user_id,period_type",
         }
       )
       .select()

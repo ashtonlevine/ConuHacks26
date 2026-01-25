@@ -11,6 +11,7 @@ import {
   Home,
   MoreHorizontal,
 } from "lucide-react";
+import { useTimePeriod } from "./time-period-context";
 
 interface Budget {
   restaurant_expenses: number;
@@ -46,21 +47,35 @@ export function CategoryBreakdown() {
   const [budget, setBudget] = useState<Budget | null>(null);
   const [categorySpending, setCategorySpending] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
+  
+  const { period, dateRange, periodLabel } = useTimePeriod();
 
+  // Fetch budget when period changes (weekly and monthly budgets are separate)
   useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
+    async function fetchBudget() {
       try {
-        // Fetch budget and transactions summary in parallel
-        const [budgetRes, summaryRes] = await Promise.all([
-          fetch("/api/budget"),
-          fetch("/api/transactions/summary"),
-        ]);
-
+        const budgetRes = await fetch(`/api/budget?periodType=${period}`);
         if (budgetRes.ok) {
           const { budget: budgetData } = await budgetRes.json();
           setBudget(budgetData);
         }
+      } catch (error) {
+        console.error("Error fetching budget:", error);
+      }
+    }
+    fetchBudget();
+  }, [period]);
+
+  // Fetch spending data when date range changes
+  useEffect(() => {
+    async function fetchSpending() {
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams({
+          startDate: dateRange.startDate,
+          endDate: dateRange.endDate,
+        });
+        const summaryRes = await fetch(`/api/transactions/summary?${params}`);
 
         if (summaryRes.ok) {
           const { summary } = await summaryRes.json();
@@ -73,8 +88,8 @@ export function CategoryBreakdown() {
       }
     }
 
-    fetchData();
-  }, []);
+    fetchSpending();
+  }, [dateRange.startDate, dateRange.endDate]);
 
   if (isLoading) {
     return (
@@ -94,6 +109,8 @@ export function CategoryBreakdown() {
       </div>
     );
   }
+
+  const budgetLabel = period === "weekly" ? "Weekly Budget" : "Monthly Budget";
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -137,7 +154,7 @@ export function CategoryBreakdown() {
                       No budget set
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Spent: {formatCurrency(spent)}
+                      {periodLabel}: {formatCurrency(spent)}
                     </p>
                   </>
                 ) : isOverspent ? (
@@ -146,7 +163,7 @@ export function CategoryBreakdown() {
                       Overspent by {formatCurrency(overspentAmount)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Spent: {formatCurrency(spent)} / Budget: {formatCurrency(budgetAmount)}
+                      Spent: {formatCurrency(spent)} / {budgetLabel}: {formatCurrency(budgetAmount)}
                     </p>
                   </>
                 ) : (
@@ -155,7 +172,7 @@ export function CategoryBreakdown() {
                       {formatCurrency(remainingDisplay)} remaining of {formatCurrency(budgetAmount)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Spent: {formatCurrency(spent)}
+                      {periodLabel}: {formatCurrency(spent)}
                     </p>
                   </>
                 )}
