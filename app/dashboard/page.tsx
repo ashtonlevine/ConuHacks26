@@ -17,7 +17,6 @@ import {
   TrendingUp,
   TrendingDown,
   Calendar,
-  Sparkles,
   ArrowRight,
   MapPin,
   PiggyBank,
@@ -35,8 +34,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { IncomeExpenseChart } from "@/components/studentpenny/income-expense-chart";
-import { ExpensePieChart } from "@/components/studentpenny/expense-pie-chart";
+import { ChartTabs } from "@/components/studentpenny/chart-tabs";
 
 // Summary type
 interface FinancialSummary {
@@ -332,36 +330,7 @@ export default function DashboardPage() {
         {/* Charts */}
         <section className="py-6 sm:py-8">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-6 lg:grid-cols-2">
-              {/* Bar Chart*/}
-              <Card className="border-border bg-card lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-foreground">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                    Income vs. Expenses
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Compare your income and expenses over time.
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <IncomeExpenseChart />
-                </CardContent>
-              </Card>
-
-              {/* Pie Chart*/}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">Expense Breakdown</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    See how your expenses are distributed across different categories.
-                  </p>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                  <ExpensePieChart />
-                </CardContent>
-              </Card>
-            </div>
+            <ChartTabs />
           </div>
         </section>
 

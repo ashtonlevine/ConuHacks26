@@ -1,4 +1,4 @@
-import { Calendar, MessageSquare, Lightbulb, PiggyBank, MapPin } from "lucide-react";
+import { Calendar, Lightbulb, PiggyBank, MapPin } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const features = [
@@ -7,12 +7,6 @@ const features = [
     title: "Semester-Aware Budgeting",
     description:
       "Budgets that understand tuition dates, rent cycles, and academic terms.",
-  },
-  {
-    icon: MessageSquare,
-    title: 'AI "What-If" Simulator',
-    description:
-      'Ask questions like "Can I afford this trip?" and get instant, student-aware answers.',
   },
   {
     icon: Lightbulb,
