@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useMemo, ReactNode } from "react"
+import { createContext, useContext, useState, useMemo, useCallback, ReactNode } from "react"
 
 export type TimePeriod = "weekly" | "monthly"
 
@@ -14,6 +14,8 @@ interface TimePeriodContextType {
   setPeriod: (period: TimePeriod) => void
   dateRange: DateRange
   periodLabel: string
+  refreshKey: number
+  triggerRefresh: () => void
 }
 
 const TimePeriodContext = createContext<TimePeriodContextType | undefined>(undefined)
@@ -117,10 +119,15 @@ interface TimePeriodProviderProps {
 
 export function TimePeriodProvider({ children }: TimePeriodProviderProps) {
   const [period, setPeriod] = useState<TimePeriod>("monthly")
+  const [refreshKey, setRefreshKey] = useState(0)
   
   const dateRange = useMemo(() => calculateDateRange(period), [period])
   
   const periodLabel = period === "weekly" ? "This Week" : "This Month"
+  
+  const triggerRefresh = useCallback(() => {
+    setRefreshKey(prev => prev + 1)
+  }, [])
   
   const value = useMemo(
     () => ({
@@ -128,8 +135,10 @@ export function TimePeriodProvider({ children }: TimePeriodProviderProps) {
       setPeriod,
       dateRange,
       periodLabel,
+      refreshKey,
+      triggerRefresh,
     }),
-    [period, dateRange, periodLabel]
+    [period, dateRange, periodLabel, refreshKey, triggerRefresh]
   )
   
   return (
