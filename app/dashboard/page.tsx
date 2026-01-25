@@ -5,7 +5,10 @@ import Link from "next/link";
 import { DashboardHeader } from "@/components/studentpenny/dashboard-header";
 import { Footer } from "@/components/studentpenny/footer";
 import { AIChatSidebar } from "@/components/studentpenny/ai-chat-sidebar";
+import { useAIChat } from "@/components/studentpenny/ai-chat-context";
 import { BudgetFormModal, Budget } from "@/components/studentpenny/budget-form-modal";
+import { GoalFormModal, Goal } from "@/components/studentpenny/goal-form-modal";
+import { TransactionFormModal, Transaction } from "@/components/studentpenny/transaction-form-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,16 +29,21 @@ import {
   Gamepad2,
   GraduationCap,
   Pencil,
+  Plus,
+  Plane,
+  ShoppingBag,
+  Trash2,
 } from "lucide-react";
 
-// Mock overview data
-const overview = {
-  balance: 1247,
-  income: 1850,
-  spending: 603,
-  tuitionDue: { date: "Sep 5", amount: 3200 },
-  rentDue: { date: "Sep 1", amount: 750 },
-};
+// Summary type
+interface FinancialSummary {
+  balance: number;
+  totalIncome: number;
+  totalExpenses: number;
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  categoryBreakdown: Record<string, number>;
+}
 
 // Sample deals for preview
 const previewDeals = [
@@ -56,13 +64,37 @@ const budgetCategories = [
   { key: "school_fees" as const, label: "School Fees", icon: GraduationCap },
 ];
 
+// Goal category icons mapping
+const goalCategoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  emergency_fund: PiggyBank,
+  trip: Plane,
+  purchase: ShoppingBag,
+  education: GraduationCap,
+  general: Target,
+};
+
 export default function DashboardPage() {
   const [aiPrompt, setAiPrompt] = useState("");
   const [budgetModalOpen, setBudgetModalOpen] = useState(false);
+  
+  // AI Chat context
+  const { sendMessage, isThinking } = useAIChat();
   const [budget, setBudget] = useState<Budget | null>(null);
   const [isLoadingBudget, setIsLoadingBudget] = useState(true);
+  
+  // Goals state
+  const [goalModalOpen, setGoalModalOpen] = useState(false);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [isLoadingGoals, setIsLoadingGoals] = useState(true);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
-  // Fetch existing budget on mount
+  // Transaction state
+  const [transactionModalOpen, setTransactionModalOpen] = useState(false);
+  const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(true);
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
+
+  // Fetch existing budget, goals, and transactions on mount
   useEffect(() => {
     async function fetchBudget() {
       try {
@@ -77,11 +109,109 @@ export default function DashboardPage() {
         setIsLoadingBudget(false);
       }
     }
+
+    async function fetchGoals() {
+      try {
+        const response = await fetch("/api/goals");
+        if (response.ok) {
+          const data = await response.json();
+          setGoals(data.goals);
+        }
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+      } finally {
+        setIsLoadingGoals(false);
+      }
+    }
+
+    async function fetchTransactionSummary() {
+      try {
+        const response = await fetch("/api/transactions/summary");
+        if (response.ok) {
+          const data = await response.json();
+          setFinancialSummary(data.summary);
+        }
+      } catch (error) {
+        console.error("Error fetching transaction summary:", error);
+      } finally {
+        setIsLoadingSummary(false);
+      }
+    }
+
+    async function fetchRecentTransactions() {
+      try {
+        const response = await fetch("/api/transactions?limit=5");
+        if (response.ok) {
+          const data = await response.json();
+          setRecentTransactions(data.transactions);
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    }
+
     fetchBudget();
+    fetchGoals();
+    fetchTransactionSummary();
+    fetchRecentTransactions();
   }, []);
 
   const handleBudgetSaved = (savedBudget: Budget) => {
     setBudget(savedBudget);
+  };
+
+  const handleGoalSaved = (savedGoal: Goal) => {
+    if (editingGoal) {
+      setGoals(goals.map(g => g.id === savedGoal.id ? savedGoal : g));
+      setEditingGoal(null);
+    } else {
+      setGoals([savedGoal, ...goals]);
+    }
+  };
+
+  const handleEditGoal = (goal: Goal) => {
+    setEditingGoal(goal);
+    setGoalModalOpen(true);
+  };
+
+  const handleDeleteGoal = async (goalId: string) => {
+    try {
+      const response = await fetch(`/api/goals?id=${goalId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setGoals(goals.filter(g => g.id !== goalId));
+      }
+    } catch (error) {
+      console.error("Error deleting goal:", error);
+    }
+  };
+
+  const handleOpenNewGoalModal = () => {
+    setEditingGoal(null);
+    setGoalModalOpen(true);
+  };
+
+  const handleTransactionSaved = async (transaction: Transaction) => {
+    // Refresh summary and recent transactions
+    try {
+      const [summaryRes, transactionsRes] = await Promise.all([
+        fetch("/api/transactions/summary"),
+        fetch("/api/transactions?limit=5"),
+      ]);
+      
+      if (summaryRes.ok) {
+        const data = await summaryRes.json();
+        setFinancialSummary(data.summary);
+      }
+      
+      if (transactionsRes.ok) {
+        const data = await transactionsRes.json();
+        setRecentTransactions(data.transactions);
+      }
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
   };
 
   const totalBudget = budget
@@ -99,7 +229,7 @@ export default function DashboardPage() {
               Welcome back
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Here’s your financial picture for this semester.
+              Here&apos;s your financial picture for this semester.
             </p>
           </div>
         </section>
@@ -107,6 +237,17 @@ export default function DashboardPage() {
         {/* Overview cards */}
         <section className="py-8 sm:py-10">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground">Overview</h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTransactionModalOpen(true)}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Transaction
+              </Button>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card className="border-border bg-card">
                 <CardHeader className="pb-2">
@@ -116,9 +257,13 @@ export default function DashboardPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-foreground">
-                    ${overview.balance.toLocaleString()}
-                  </p>
+                  {isLoadingSummary ? (
+                    <p className="text-sm text-muted-foreground">Loading...</p>
+                  ) : (
+                    <p className="text-2xl font-bold text-foreground">
+                      ${(financialSummary?.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -130,9 +275,13 @@ export default function DashboardPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-foreground">
-                    ${overview.income.toLocaleString()}
-                  </p>
+                  {isLoadingSummary ? (
+                    <p className="text-sm text-muted-foreground">Loading...</p>
+                  ) : (
+                    <p className="text-2xl font-bold text-foreground">
+                      ${(financialSummary?.monthlyIncome || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -144,9 +293,13 @@ export default function DashboardPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-foreground">
-                    ${overview.spending.toLocaleString()}
-                  </p>
+                  {isLoadingSummary ? (
+                    <p className="text-sm text-muted-foreground">Loading...</p>
+                  ) : (
+                    <p className="text-2xl font-bold text-foreground">
+                      ${(financialSummary?.monthlyExpenses || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -154,16 +307,19 @@ export default function DashboardPage() {
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    Upcoming
+                    Recent Activity
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-1 text-sm">
-                  <p className="text-foreground">
-                    Tuition due {overview.tuitionDue.date} · ${overview.tuitionDue.amount.toLocaleString()}
-                  </p>
-                  <p className="text-foreground">
-                    Rent due {overview.rentDue.date} · ${overview.rentDue.amount.toLocaleString()}
-                  </p>
+                  {recentTransactions.length > 0 ? (
+                    recentTransactions.slice(0, 2).map((t) => (
+                      <p key={t.id} className="text-foreground truncate">
+                        {t.type === 'expense' ? '-' : '+'}${Number(t.amount).toFixed(2)} · {t.description || t.category}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">No recent transactions</p>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -192,9 +348,26 @@ export default function DashboardPage() {
                       placeholder="e.g. Can I afford a $50 concert ticket?"
                       value={aiPrompt}
                       onChange={(e) => setAiPrompt(e.target.value)}
-                      className="flex-1 rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && aiPrompt.trim() && !isThinking) {
+                          sendMessage(aiPrompt);
+                          setAiPrompt("");
+                        }
+                      }}
+                      disabled={isThinking}
+                      className="flex-1 rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                     />
-                    <Button>Ask</Button>
+                    <Button
+                      onClick={() => {
+                        if (aiPrompt.trim()) {
+                          sendMessage(aiPrompt);
+                          setAiPrompt("");
+                        }
+                      }}
+                      disabled={!aiPrompt.trim() || isThinking}
+                    >
+                      {isThinking ? "Thinking..." : "Ask"}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -236,7 +409,7 @@ export default function DashboardPage() {
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </Link>
                   <Link
-                    href="/dashboard#savings"
+                    href="/dashboard#goals"
                     className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
                   >
                     <span className="flex items-center gap-2 font-medium">
@@ -410,25 +583,146 @@ export default function DashboardPage() {
           </div>
         </section>
 
+        {/* Goals Section */}
         <section id="goals" className="scroll-mt-24 border-t border-border py-10 sm:py-14">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-              Savings goals
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Emergency fund, trips, or big purchases. (Coming soon.)
-            </p>
-            <Card className="mt-4 border border-dashed border-border">
-              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                <Target className="h-10 w-10 text-muted-foreground/50" />
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Create a goal and we’ll suggest a micro-saving plan.
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Savings goals
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  Emergency fund, trips, or big purchases.
                 </p>
-                <Button variant="outline" size="sm" className="mt-4">
-                  Add goal
+              </div>
+              {goals.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleOpenNewGoalModal}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Goal
                 </Button>
-              </CardContent>
-            </Card>
+              )}
+            </div>
+
+            {isLoadingGoals ? (
+              <Card className="mt-4 border border-border">
+                <CardContent className="flex items-center justify-center py-12">
+                  <p className="text-sm text-muted-foreground">Loading goals...</p>
+                </CardContent>
+              </Card>
+            ) : goals.length > 0 ? (
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {goals.map((goal) => {
+                  const Icon = goalCategoryIcons[goal.category] || Target;
+                  const progress = goal.target_amount > 0 
+                    ? (goal.current_amount / goal.target_amount) * 100 
+                    : 0;
+                  const remaining = goal.target_amount - goal.current_amount;
+                  
+                  // Calculate monthly savings needed if target date exists
+                  let monthlySavings = null;
+                  if (goal.target_date && remaining > 0) {
+                    const targetDate = new Date(goal.target_date);
+                    const today = new Date();
+                    const monthsRemaining = Math.max(
+                      (targetDate.getFullYear() - today.getFullYear()) * 12 +
+                        (targetDate.getMonth() - today.getMonth()),
+                      1
+                    );
+                    monthlySavings = remaining / monthsRemaining;
+                  }
+
+                  return (
+                    <Card key={goal.id} className="border-border bg-card">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between">
+                          <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
+                            <Icon className="h-4 w-4 text-primary" />
+                            {goal.name}
+                          </CardTitle>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={() => handleEditGoal(goal)}
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                              onClick={() => goal.id && handleDeleteGoal(goal.id)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div>
+                            <div className="flex items-baseline justify-between">
+                              <span className="text-2xl font-bold text-foreground">
+                                ${goal.current_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                              <span className="text-sm text-muted-foreground">
+                                of ${goal.target_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </span>
+                            </div>
+                            <div className="mt-2 h-2 w-full rounded-full bg-muted">
+                              <div
+                                className="h-2 rounded-full bg-primary transition-all"
+                                style={{ width: `${Math.min(progress, 100)}%` }}
+                              />
+                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              {progress.toFixed(0)}% complete
+                            </p>
+                          </div>
+                          
+                          {goal.target_date && (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Calendar className="h-3 w-3" />
+                              Target: {new Date(goal.target_date).toLocaleDateString()}
+                            </div>
+                          )}
+                          
+                          {monthlySavings && monthlySavings > 0 && (
+                            <div className="rounded-lg bg-muted/50 p-2">
+                              <p className="text-xs text-muted-foreground">
+                                Save <span className="font-semibold text-primary">${monthlySavings.toFixed(2)}/month</span> to reach your goal
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <Card className="mt-4 border border-dashed border-border">
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Target className="h-10 w-10 text-muted-foreground/50" />
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Create a goal and we&apos;ll suggest a micro-saving plan.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-4"
+                    onClick={handleOpenNewGoalModal}
+                  >
+                    Add goal
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </section>
       </main>
@@ -441,6 +735,24 @@ export default function DashboardPage() {
         onOpenChange={setBudgetModalOpen}
         existingBudget={budget}
         onBudgetSaved={handleBudgetSaved}
+      />
+
+      {/* Goal Form Modal */}
+      <GoalFormModal
+        open={goalModalOpen}
+        onOpenChange={(open) => {
+          setGoalModalOpen(open);
+          if (!open) setEditingGoal(null);
+        }}
+        existingGoal={editingGoal}
+        onGoalSaved={handleGoalSaved}
+      />
+
+      {/* Transaction Form Modal */}
+      <TransactionFormModal
+        open={transactionModalOpen}
+        onOpenChange={setTransactionModalOpen}
+        onTransactionSaved={handleTransactionSaved}
       />
     </div>
   );

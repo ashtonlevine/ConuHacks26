@@ -1,5 +1,28 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { GoogleGenAI } from "@google/genai";
+
+// Simple in-memory rate limiter (for production, use Redis)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 20; // 20 requests per minute
+
+function checkRateLimit(userId: string): { allowed: boolean; remaining: number } {
+  const now = Date.now();
+  const userLimit = rateLimitMap.get(userId);
+  
+  if (!userLimit || now > userLimit.resetTime) {
+    rateLimitMap.set(userId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - 1 };
+  }
+  
+  if (userLimit.count >= MAX_REQUESTS_PER_WINDOW) {
+    return { allowed: false, remaining: 0 };
+  }
+  
+  userLimit.count++;
+  return { allowed: true, remaining: MAX_REQUESTS_PER_WINDOW - userLimit.count };
+}
 
 const SYSTEM_INSTRUCTION = `You are the SmartPenny in-app assistant. The user is in an app with Budget, "After essentials," Deals, tuition/rent, runway, and savings goals. You do NOT have access to their live numbers.
 
@@ -38,6 +61,24 @@ Maybe. Your After essentials show limited room for extra spending.
 `;
 
 export async function POST(request: Request) {
+  // Authentication check
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Unauthorized. Please sign in to use the AI assistant." },
+      { status: 401 }
+    );
+  }
+
+  // Rate limiting check
+  const rateLimit = checkRateLimit(userId);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Please wait a moment before trying again." },
+      { status: 429 }
+    );
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
