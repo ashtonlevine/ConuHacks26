@@ -12,10 +12,10 @@ import Image from "next/image";
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard#budget", label: "Budget", icon: Wallet },
-  { href: "/dashboard#deals", label: "Deals", icon: MapPin },
   { href: "/dashboard#analytics", label: "Analytics", icon: ChartArea },
   { href: "/dashboard#goals", label: "Goals", icon: Target },
   { href: "/transactions", label: "Transactions", icon: ChartArea },
+  { href: "/dashboard/deals", label: "Deals", icon: MapPin },
 ];
 
 export function DashboardHeader() {

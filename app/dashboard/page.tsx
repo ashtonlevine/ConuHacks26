@@ -11,17 +11,13 @@ import { GoalFormModal, Goal } from "@/components/studentpenny/goal-form-modal";
 import { TransactionFormModal, Transaction } from "@/components/studentpenny/transaction-form-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Wallet,
   TrendingUp,
   TrendingDown,
   Calendar,
-  ArrowRight,
-  MapPin,
   PiggyBank,
   Target,
-  Star,
   Utensils,
   Fuel,
   ShoppingCart,
@@ -47,16 +43,6 @@ interface FinancialSummary {
   monthlyExpenses: number;
   categoryBreakdown: Record<string, number>;
 }
-
-// Sample deals for preview
-const previewDeals = [
-  { name: "Campus Grill", deal: "$5 Student Lunch Special", distance: "0.2 mi", rating: 4.5, sponsored: true },
-  { name: "Pho House", deal: "15% off with student ID", distance: "0.3 mi", rating: 4.7, sponsored: false },
-  { name: "The Daily Grind", deal: "$2 Coffee before 9am", distance: "0.1 mi", rating: 4.8, sponsored: false },
-  { name: "Pizza Palace", deal: "$8 Large Pizza Mondays", distance: "0.1 mi", rating: 4.2, sponsored: true },
-  { name: "Sushi Station", deal: "$12 All-You-Can-Eat Tuesdays", distance: "0.5 mi", rating: 4.6, sponsored: true },
-  { name: "Bagel Barn", deal: "BOGO Bagels Thursdays", distance: "0.2 mi", rating: 4.6, sponsored: false },
-];
 
 // Budget category display configuration
 const budgetCategories = [
@@ -345,62 +331,6 @@ export default function DashboardPage() {
               <div className="mt-6">
                 <ChartTabs />
               </div>
-          </div>
-        </section>
-
-        {/* Deals preview */}
-        <section id="deals" className="scroll-mt-24 border-t border-border bg-muted/20 py-10 sm:py-14">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                  Nearby student deals
-                </h2>
-                <p className="mt-1 text-muted-foreground">
-                  Budget-friendly eats near campus
-                </p>
-              </div>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/dashboard/deals">
-                  View all deals
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {previewDeals.map((d) => (
-                <Card
-                  key={d.name}
-                  className="group border-border bg-card transition-all hover:border-primary/30 hover:shadow-md"
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-base font-semibold text-foreground">
-                        {d.name}
-                      </CardTitle>
-                      {d.sponsored && (
-                        <Badge variant="secondary" className="text-xs">
-                          Sponsored
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Star className="h-3.5 w-3.5 fill-primary text-primary" />
-                      <span>{d.rating}</span>
-                      <span className="mx-1">·</span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5" />
-                        {d.distance}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm font-medium text-primary">{d.deal}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
         </section>
 
