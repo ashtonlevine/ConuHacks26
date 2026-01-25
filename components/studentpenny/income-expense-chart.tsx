@@ -1,5 +1,5 @@
 "use client";
-
+import React, { useEffect, useState } from "react";
 import { 
   ComposedChart, 
   Bar, 
@@ -12,16 +12,67 @@ import {
   Legend 
 } from "recharts";
 
-const data = [
-  { month: "Apr", income: 1200, expenses: 900},
-  { month: "May", income: 1500, expenses: 1100},
-  { month: "Jun", income: 1100, expenses: 1300},
-  { month: "Jul", income: 1800, expenses: 1000},
-  { month: "Aug", income: 2000, expenses: 1200},
-  { month: "Sep", income: 1850, expenses: 603},
-];
+import { createClient } from "@supabase/supabase-js";
+
+// Supabase credentials
+const supabaseUrl = "https://xiwhvyqsxsittqfnvgdf.supabase.co";
+const supabaseAnonKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd2h2eXFzeHNpdHRxZm52Z2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNzQxOTYsImV4cCI6MjA4NDg1MDE5Nn0.BbVIJx1zfHEpC5i9a07nDyVRSvJDiU4OpyV2K9Izn4g";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// ...other imports and setup remain unchanged
+
+type Transaction = {
+  amount: number;
+  type: "income" | "expense";
+  transaction_date: string;
+};
+
+function getMonthLabel(dateStr: string) {
+  const date = new Date(dateStr);
+  return date.toLocaleString("en-US", { month: "short", year: "2-digit" });
+}
 
 export function IncomeExpenseChart() {
+  type ChartData = {
+    month: string;
+    income: number;
+    expenses: number;
+  };
+
+  const [data, setData] = useState<ChartData[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data: transactions, error } = await supabase
+        .from("transactions")
+        .select("amount, type, transaction_date");
+      if (error) {
+        console.error(error);
+        return;
+      }
+      const grouped: { [month: string]: ChartData } = {};
+      transactions.forEach((t: Transaction) => {
+        const month = getMonthLabel(t.transaction_date);
+        if (!grouped[month]) {
+          grouped[month] = { month, income: 0, expenses: 0 };
+        }
+        if (t.type === "income") {
+          grouped[month].income += t.amount;
+        } else if (t.type === "expense") {
+          grouped[month].expenses += t.amount;
+        }
+      });
+      const sorted = Object.values(grouped).sort(
+        (a, b) =>
+          new Date("20" + a.month.split(" ")[1] + "-" + a.month.split(" ")[0] + "-01").getTime() -
+          new Date("20" + b.month.split(" ")[1] + "-" + b.month.split(" ")[0] + "-01").getTime()
+      );
+      setData(sorted);
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="h-[350px] w-full">
       <ResponsiveContainer width="100%" height="100%">
