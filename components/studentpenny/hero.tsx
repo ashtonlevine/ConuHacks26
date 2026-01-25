@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Hero() {
   return (
@@ -15,11 +16,18 @@ export function Hero() {
           <p className="mb-4 text-sm font-medium uppercase tracking-widest text-primary">
             Free for students — Smart for sponsors
           </p>
-
-          <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Finally, a Budget That Gets Student Life
-          </h1>
-
+          <div className="flex items-center gap-x-3 border rounded-lg p-2" style={{ borderColor: '#1C8F99' }}>
+            <Image
+              src="/smartpennies.png"
+              alt="StudentPenny"
+              width={256}
+              height={256}
+              className="h-48 w-48 object-contain"
+            />
+            <span className="text-balance text-5xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
+              StudentPenny
+            </span>
+          </div>
           <p className="mt-6 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Plan your money around semesters, tuition, and part-time income — not generic monthly budgets.
           </p>
@@ -33,9 +41,6 @@ export function Hero() {
             </Button>
             <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent" asChild>
               <Link href="#how-it-works">See How It Works</Link>
-            </Button>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent" asChild>
-              <Link href="/sponsor">Become a Sponsor</Link>
             </Button>
           </div>
         </div>
