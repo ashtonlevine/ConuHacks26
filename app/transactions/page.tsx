@@ -19,8 +19,8 @@ export default function TransactionPage() {
       setError(null);
       const { data, error } = await supabase
         .from("transactions")
-        .select("id, description, amount, type, date")
-        .order("date", { ascending: false });
+        .select("id, description, amount, type, created_at")
+        .order("created_at", { ascending: false });
       if (error) {
         setError(error.message);
       } else {
@@ -50,7 +50,7 @@ export default function TransactionPage() {
           <tbody>
             {transactions.map((tx) => (
               <tr key={tx.id}>
-                <td className="border-b p-2">{new Date(tx.date).toLocaleDateString()}</td>
+                <td className="border-b p-2">{new Date(tx.created_at).toLocaleDateString()}</td>
                 <td className="border-b p-2">{tx.description}</td>
                 <td className="border-b p-2 capitalize">{tx.type}</td>
                 <td className={`border-b p-2 text-right ${tx.type === "expense" ? "text-red-500" : "text-green-600"}`}>
