@@ -22,9 +22,9 @@ export function Header() {
           height={64}
           className="h-16 w-16 object-contain"
         />
-          <span className="text-xl font-semibold text-foreground">
-            StudentPenny
-          </span>
+          <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent" asChild>
+            <Link href="/sponsor">Become a Sponsor</Link>
+          </Button>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
