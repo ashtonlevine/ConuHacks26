@@ -332,7 +332,17 @@ export default function DashboardPage() {
         {/* Charts */}
         <section className="py-6 sm:py-8">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Analytics
+                </h2>
+                <p className="mt-2 text-muted-foreground">
+                  See your financial data in a visual format.
+                </p>
+              </div>
+            </div>
+            <div className="mt-2 grid gap-6 lg:grid-cols-2">
               {/* Bar Chart*/}
               <Card className="border-border bg-card lg:col-span-2">
                 <CardHeader>
