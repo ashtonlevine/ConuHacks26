@@ -2,7 +2,6 @@
 
 A smart financial management platform designed specifically for students, helping them take control of their spending and achieve their savings goals.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![Powered by Supabase](https://img.shields.io/badge/Powered%20by-Supabase-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com)
 
@@ -16,7 +15,7 @@ StudentPenny analyzes a student's transactions to generate a clear monthly overv
 
 - **Customized Budgets** - Weekly and monthly budget tracking across 7 categories
 - **Savings Goals** - Set and track progress toward financial goals with smart calculations
-- **Student Deals** - A curated list of 60+ student-exclusive deals shared by sponsors
+- **Student Deals** - A curated list of student-exclusive deals shared by sponsors
 - **Transaction Tracking** - An up-to-date record of all income and expenses
 - **AI Assistant** - Personalized financial advice using your actual financial data to suggest actionable saving strategies
 
@@ -42,10 +41,6 @@ StudentPenny analyzes a student's transactions to generate a clear monthly overv
 ### Forms & Validation
 - **react-hook-form** - Form state management
 - **Zod** - Schema validation
-
-### Deployment
-- **Vercel** - Hosting and deployment
-- **Vercel Analytics** - Usage analytics
 
 ## Features
 
@@ -82,7 +77,7 @@ Get personalized financial advice from an AI assistant that understands your:
 The AI provides actionable recommendations based on your actual financial situation.
 
 ### Student Deals
-Browse 60+ curated deals from local restaurants and businesses. Features include:
+Browse curated deals from local restaurants and businesses. Features include:
 - Search and category filtering
 - Ratings and distance information
 - Save deals for later
@@ -106,34 +101,6 @@ Track regular bills and subscriptions with:
 | `recurring_expenses` | Regular bills and subscriptions |
 | `sponsorship_requests` | Business sponsorship applications |
 
-## Project Structure
-
-```
-├── app/
-│   ├── api/                 # API routes
-│   │   ├── budget/          # Budget CRUD
-│   │   ├── chat/            # AI chat endpoint
-│   │   ├── deals/           # Deals and saved deals
-│   │   ├── goals/           # Savings goals CRUD
-│   │   ├── recurring/       # Recurring expenses
-│   │   ├── sponsorships/    # Sponsorship requests
-│   │   └── transactions/    # Transaction CRUD
-│   ├── dashboard/           # Main app dashboard
-│   │   └── deals/           # Deals page
-│   ├── transactions/        # Transaction list page
-│   ├── login/               # Authentication
-│   ├── signup/              # Registration
-│   └── sponsor/             # Sponsorship request form
-├── components/
-│   ├── studentpenny/        # App-specific components
-│   ├── landing/             # Marketing page components
-│   └── ui/                  # Reusable UI components
-├── lib/
-│   ├── supabase/            # Database client setup
-│   └── utils.ts             # Utility functions
-└── supabase/
-    └── migrations/          # Database schema migrations
-```
 
 ## Getting Started
 
@@ -143,24 +110,6 @@ Track regular bills and subscriptions with:
 - Supabase account
 - Clerk account
 - Google AI API key
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/studentpenny.git
-cd studentpenny
-```
-
-2. Install dependencies:
-```bash
-pnpm install
-```
-
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
 
 Required environment variables:
 ```
@@ -187,7 +136,7 @@ pnpm dev
 
 ## How We Built It
 
-Due to time constraints and the power of AI models, we leveraged AI to help code our app with manual code reviews and tweaks. The core architecture was designed around:
+Due to time constraints and the power of AI models, we created the landing page using v0 and leveraged Cursor and Github Copilot AI to help code our app with manual code reviews and tweaks. The core architecture was designed around:
 
 - **Next.js App Router** for seamless navigation and API routes
 - **Supabase** for real-time database operations
