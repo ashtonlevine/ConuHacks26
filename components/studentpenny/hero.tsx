@@ -35,6 +35,9 @@ export function Hero() {
             <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent" asChild>
               <Link href="#how-it-works">See How It Works</Link>
             </Button>
+            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent" asChild>
+              <Link href="/sponsor">Become a Sponsor</Link>
+            </Button>
           </div>
         </div>
 

@@ -17,7 +17,6 @@ import {
   TrendingUp,
   TrendingDown,
   Calendar,
-  Sparkles,
   ArrowRight,
   MapPin,
   PiggyBank,
@@ -35,8 +34,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { IncomeExpenseChart } from "@/components/studentpenny/income-expense-chart";
-import { ExpensePieChart } from "@/components/studentpenny/expense-pie-chart";
+import { ChartTabs } from "@/components/studentpenny/chart-tabs";
 
 // Summary type
 interface FinancialSummary {
@@ -372,6 +370,7 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
+            <ChartTabs />
           </div>
         </section>
 
