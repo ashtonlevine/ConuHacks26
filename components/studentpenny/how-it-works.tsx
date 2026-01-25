@@ -3,7 +3,7 @@ const steps = [
     number: "01",
     title: "Enter your details",
     description:
-      "Enter your transactions, budget and saving goals StudentPenny will cover the rest.",
+      "Enter your transactions, budget and saving goals, StudentPenny will cover the rest.",
   },
   {
     number: "02",
