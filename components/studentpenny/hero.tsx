@@ -62,7 +62,7 @@ function Carousel({ images, idPrefix, mode }: { images: string[]; idPrefix: stri
             alt={`StudentPenny ${mode === 'light' ? 'Light' : 'Dark'} Mode Screenshot ${idx + 1}`}
             width={900}
             height={500}
-            className={`rounded-xl shadow-xl object-contain absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${idx === currentIndex ? 'opacity-100' : 'opacity-0'} border-4 border-white`}
+            className={`mt-8 rounded-xl shadow-xl object-contain absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${idx === currentIndex ? 'opacity-100' : 'opacity-0'} border-4 border-white dark:border-gray-900`}
             style={{ pointerEvents: 'none' }}
           />
         ))}
