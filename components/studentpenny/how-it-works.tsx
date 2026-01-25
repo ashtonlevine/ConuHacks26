@@ -42,7 +42,7 @@ export function HowItWorks() {
                 <div className="absolute left-1/2 top-16 hidden h-0.5 w-full -translate-y-1/2 bg-border lg:block" />
               )}
               <div className="relative flex flex-col items-center text-center">
-                <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-background text-2xl font-bold text-primary">
+                <div className="relative z-10 flex h-16 w-16 items-center justify-center rounded-sm border-2 border-primary bg-background text-2xl font-bold text-primary">
                   {step.number}
                 </div>
                 <h3 className="mt-6 text-xl font-semibold text-foreground">

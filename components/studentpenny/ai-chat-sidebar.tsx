@@ -78,7 +78,7 @@ export function AIChatSidebar() {
         <div className="flex h-full min-h-0 flex-col">
           {/* Header */}
           <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary/10">
               <Sparkles className="h-4 w-4 text-primary" />
             </div>
             <div>
@@ -102,7 +102,7 @@ export function AIChatSidebar() {
                     key={s}
                     type="button"
                     onClick={() => handleSuggestion(s)}
-                    className="block w-full rounded-lg border border-border bg-muted/50 px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-muted"
+                    className="block w-full rounded-sm border border-border bg-muted/50 px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-muted"
                   >
                     {s}
                   </button>
@@ -119,7 +119,7 @@ export function AIChatSidebar() {
               >
                 <div
                   className={cn(
-                    "max-w-[85%] rounded-xl px-3 py-2 text-sm",
+                    "max-w-[85%] rounded-sm px-3 py-2 text-sm",
                     m.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-foreground"
@@ -131,10 +131,10 @@ export function AIChatSidebar() {
             ))}
             {isThinking && (
               <div className="mb-3 flex justify-start">
-                <div className="flex gap-1 rounded-xl bg-muted px-3 py-2">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-muted-foreground" />
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-muted-foreground [animation-delay:0.2s]" />
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-muted-foreground [animation-delay:0.4s]" />
+                <div className="flex gap-1 rounded-sm bg-muted px-3 py-2">
+                  <span className="h-2 w-2 animate-pulse rounded-sm bg-muted-foreground" />
+                  <span className="h-2 w-2 animate-pulse rounded-sm bg-muted-foreground [animation-delay:0.2s]" />
+                  <span className="h-2 w-2 animate-pulse rounded-sm bg-muted-foreground [animation-delay:0.4s]" />
                 </div>
               </div>
             )}
@@ -151,7 +151,7 @@ export function AIChatSidebar() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 disabled={isThinking}
-                className="flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                className="flex-1 rounded-sm border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
               />
               <Button
                 size="icon"
@@ -171,7 +171,7 @@ export function AIChatSidebar() {
         type="button"
         onClick={handleTabClick}
         className={cn(
-          "flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl border border-border bg-card shadow-lg transition-colors hover:bg-muted/80",
+          "flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-sm border border-border bg-card shadow-lg transition-colors hover:bg-muted/80",
           isOpen && "absolute bottom-4 right-4 z-10 bg-muted/50"
         )}
         aria-label={isOpen ? "Close AI assistant" : "Open AI assistant"}

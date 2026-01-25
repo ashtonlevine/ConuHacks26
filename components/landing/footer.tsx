@@ -67,7 +67,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-6">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"

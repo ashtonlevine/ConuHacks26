@@ -213,7 +213,7 @@ export function TransactionFormModal({
                 <button
                   type="button"
                   onClick={() => handleTypeSelect("expense")}
-                  className={`flex items-center justify-center gap-2 rounded-lg border p-3 transition-colors ${
+                  className={`flex items-center justify-center gap-2 rounded-sm border p-3 transition-colors ${
                     selectedType === "expense"
                       ? "border-destructive bg-destructive/10"
                       : "border-border hover:border-destructive/50"
@@ -225,7 +225,7 @@ export function TransactionFormModal({
                 <button
                   type="button"
                   onClick={() => handleTypeSelect("income")}
-                  className={`flex items-center justify-center gap-2 rounded-lg border p-3 transition-colors ${
+                  className={`flex items-center justify-center gap-2 rounded-sm border p-3 transition-colors ${
                     selectedType === "income"
                       ? "border-primary bg-primary/10"
                       : "border-border hover:border-primary/50"
@@ -271,7 +271,7 @@ export function TransactionFormModal({
                       key={cat.value}
                       type="button"
                       onClick={() => handleCategorySelect(cat.value)}
-                      className={`flex flex-col items-center gap-1 rounded-lg border p-2 text-xs transition-colors ${
+                      className={`flex flex-col items-center gap-1 rounded-sm border p-2 text-xs transition-colors ${
                         selectedCategory === cat.value
                           ? "border-primary bg-primary/10"
                           : "border-border hover:border-primary/50"

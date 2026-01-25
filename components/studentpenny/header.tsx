@@ -92,21 +92,21 @@ export function Header() {
           <nav className="flex flex-col gap-1 p-4">
             <Link
               href="#features"
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
               Features
             </Link>
             <Link
               href="#how-it-works"
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
               How It Works
             </Link>
             <Link
               href="#about"
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               onClick={() => setMobileMenuOpen(false)}
             >
               About

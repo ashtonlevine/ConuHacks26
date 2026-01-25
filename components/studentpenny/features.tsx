@@ -48,7 +48,7 @@ export function Features() {
               className="group relative overflow-hidden border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
             >
               <CardHeader>
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10 transition-colors group-hover:bg-primary/20">
                   <feature.icon className="h-6 w-6 text-primary" />
                 </div>
                 <CardTitle className="text-lg font-semibold text-foreground">

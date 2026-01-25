@@ -45,9 +45,9 @@ export function Features() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative rounded-xl border border-border bg-background p-6 transition-all hover:border-muted-foreground/30 hover:shadow-lg"
+              className="group relative rounded-sm border border-border bg-background p-6 transition-all hover:border-muted-foreground/30 hover:shadow-lg"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
+              <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary">
                 <feature.icon className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-foreground">{feature.title}</h3>

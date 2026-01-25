@@ -467,9 +467,9 @@ export default function DashboardPage() {
                           <p className="text-lg font-bold text-foreground">
                             ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </p>
-                          <div className="mt-2 h-1.5 w-full rounded-full bg-muted">
+                          <div className="mt-2 h-1.5 w-full rounded-sm bg-muted">
                             <div
-                              className="h-1.5 rounded-full bg-primary transition-all"
+                              className="h-1.5 rounded-sm bg-primary transition-all"
                               style={{ width: `${Math.min(percentage, 100)}%` }}
                             />
                           </div>
@@ -594,9 +594,9 @@ export default function DashboardPage() {
                                 of ${goal.target_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </span>
                             </div>
-                            <div className="mt-2 h-2 w-full rounded-full bg-muted">
+                            <div className="mt-2 h-2 w-full rounded-sm bg-muted">
                               <div
-                                className="h-2 rounded-full bg-primary transition-all"
+                                className="h-2 rounded-sm bg-primary transition-all"
                                 style={{ width: `${Math.min(progress, 100)}%` }}
                               />
                             </div>
@@ -613,7 +613,7 @@ export default function DashboardPage() {
                           )}
                           
                           {monthlySavings && monthlySavings > 0 && (
-                            <div className="rounded-lg bg-muted/50 p-2">
+                            <div className="rounded-sm bg-muted/50 p-2">
                               <p className="text-xs text-muted-foreground">
                                 Save <span className="font-semibold text-primary">${monthlySavings.toFixed(2)}/month</span> to reach your goal
                               </p>

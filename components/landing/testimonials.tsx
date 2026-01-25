@@ -45,7 +45,7 @@ export function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.author}
-              className="flex flex-col rounded-xl border border-border bg-card p-6"
+              className="flex flex-col rounded-sm border border-border bg-card p-6"
             >
               <div className="flex gap-1">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
