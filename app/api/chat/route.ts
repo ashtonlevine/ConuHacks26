@@ -45,8 +45,8 @@ export async function POST(request: Request) {
     const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      systemInstruction: SYSTEM_INSTRUCTION,
       contents,
+      config: { systemInstruction: SYSTEM_INSTRUCTION },
     });
 
     const text = response.text ?? "";
