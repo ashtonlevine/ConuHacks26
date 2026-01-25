@@ -75,7 +75,7 @@ export default function DashboardPage() {
   const { sendMessage, isThinking } = useAIChat();
   
   // Time period context
-  const { period, dateRange, periodLabel } = useTimePeriod();
+  const { period, dateRange, periodLabel, triggerRefresh } = useTimePeriod();
   
   const [budget, setBudget] = useState<Budget | null>(null);
   const [isLoadingBudget, setIsLoadingBudget] = useState(true);
@@ -318,6 +318,9 @@ IMPORTANT: Base your advice on the ACTUAL time remaining shown above. If there a
         const data = await transactionsRes.json();
         setRecentTransactions(data.transactions);
       }
+      
+      // Trigger refresh for all chart components
+      triggerRefresh();
     } catch (error) {
       console.error("Error refreshing data:", error);
     }
