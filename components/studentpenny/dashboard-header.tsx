@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, X, LayoutDashboard, Wallet, MapPin } from "lucide-react";
+import { Menu, X, LayoutDashboard, Wallet, MapPin, ChartArea} from "lucide-react";
 import Image from "next/image";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard#budget", label: "Budget", icon: Wallet },
   { href: "/dashboard#deals", label: "Deals", icon: MapPin },
+  { href: "/dashboard#analytics", label: "Analytics", icon: ChartArea },
 ];
 
 export function DashboardHeader() {
