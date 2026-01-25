@@ -168,6 +168,11 @@ export function IncomeExpenseChart() {
           />
           <Tooltip 
             contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0' }}
+            labelStyle={{ 
+              color: '#1e293b', 
+              fontWeight: 'bold', 
+              marginBottom: '4px' 
+            }}
           />
           <Legend verticalAlign="top" align="right" height={36}/>
           
