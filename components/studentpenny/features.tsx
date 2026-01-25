@@ -1,4 +1,4 @@
-import { Calendar, Lightbulb, PiggyBank, MapPin } from "lucide-react";
+import { Calendar, Lightbulb, Target, MapPin } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const features = [
@@ -15,8 +15,8 @@ const features = [
       "Personalized suggestions based on real student spending patterns.",
   },
   {
-    icon: PiggyBank,
-    title: "Emergency Fund Builder",
+    icon: Target,
+    title: "AI-Powered Goal Tracking",
     description:
       "Micro-saving plans that fit student budgets without sacrificing lifestyle.",
   },

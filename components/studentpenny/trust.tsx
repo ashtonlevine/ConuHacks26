@@ -47,9 +47,6 @@ export function Trust() {
               <span className="text-sm font-medium text-foreground">
                 Campus Grill - $5 Student Lunch Special
               </span>
-              <Badge variant="secondary" className="text-xs">
-                Sponsored
-              </Badge>
             </div>
           </div>
         </div>
