@@ -32,6 +32,8 @@ import {
   Plane,
   ShoppingBag,
   Trash2,
+  Home,
+  MoreHorizontal,
 } from "lucide-react";
 
 import { ChartTabs } from "@/components/studentpenny/chart-tabs";
@@ -63,6 +65,8 @@ const budgetCategories = [
   { key: "grocery_shopping" as const, label: "Groceries", icon: ShoppingCart },
   { key: "leisure" as const, label: "Leisure", icon: Gamepad2 },
   { key: "school_fees" as const, label: "School Fees", icon: GraduationCap },
+  { key: "rent" as const, label: "Rent", icon: Home },
+  { key: "other" as const, label: "Other", icon: MoreHorizontal },
 ];
 
 // Goal category icons mapping
@@ -450,7 +454,7 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* Budget Categories Grid */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
                   {budgetCategories.map((category) => {
                     const Icon = category.icon;
                     const amount = budget[category.key] || 0;
