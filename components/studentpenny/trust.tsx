@@ -11,8 +11,8 @@ export function Trust() {
           </h2>
 
           <div className="mt-10 grid gap-6 text-left sm:grid-cols-3">
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex flex-col items-center gap-3 rounded-sm border border-border bg-card p-6 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10">
                 <Utensils className="h-6 w-6 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -20,8 +20,8 @@ export function Trust() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex flex-col items-center gap-3 rounded-sm border border-border bg-card p-6 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10">
                 <Heart className="h-6 w-6 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -29,8 +29,8 @@ export function Trust() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex flex-col items-center gap-3 rounded-sm border border-border bg-card p-6 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10">
                 <Tag className="h-6 w-6 text-primary" />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -43,7 +43,7 @@ export function Trust() {
             <span className="text-sm text-muted-foreground">
               Example of sponsored content labeling:
             </span>
-            <div className="inline-flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
+            <div className="inline-flex items-center gap-3 rounded-sm border border-border bg-card px-4 py-3">
               <span className="text-sm font-medium text-foreground">
                 Campus Grill - $5 Student Lunch Special
               </span>

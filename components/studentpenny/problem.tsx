@@ -28,9 +28,9 @@ export function Problem() {
             {problems.map((problem) => (
               <li
                 key={problem.text}
-                className="flex items-start gap-4 rounded-lg border border-border bg-card p-4"
+                className="flex items-start gap-4 rounded-sm border border-border bg-card p-4"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-primary/10">
                   <problem.icon className="h-5 w-5 text-primary" />
                 </div>
                 <span className="pt-2 text-base font-medium text-foreground">

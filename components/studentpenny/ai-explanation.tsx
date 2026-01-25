@@ -37,8 +37,8 @@ export function AIExplanation() {
           </h2>
 
           <div className="mt-10 grid gap-6 text-left sm:grid-cols-2">
-            <div className="flex items-start gap-4 rounded-xl border border-border bg-card p-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex items-start gap-4 rounded-sm border border-border bg-card p-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm bg-primary/10">
                 <Calculator className="h-6 w-6 text-primary" />
               </div>
               <div>
@@ -51,8 +51,8 @@ export function AIExplanation() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4 rounded-xl border border-border bg-card p-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex items-start gap-4 rounded-sm border border-border bg-card p-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm bg-primary/10">
                 <Bot className="h-6 w-6 text-primary" />
               </div>
               <div>
@@ -79,12 +79,12 @@ export function AIExplanation() {
             </Button>
           </div>
           {example && (
-            <div className="mt-4 rounded-xl border border-border bg-muted/50 px-4 py-3 text-left text-sm text-muted-foreground">
+            <div className="mt-4 rounded-sm border border-border bg-muted/50 px-4 py-3 text-left text-sm text-muted-foreground">
               {example}
             </div>
           )}
 
-          <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-border bg-muted px-6 py-3">
+          <div className="mt-8 inline-flex items-center gap-3 rounded-sm border border-border bg-muted px-6 py-3">
             <ShieldCheck className="h-5 w-5 text-primary" />
             <span className="text-sm font-medium text-foreground">
               No investing advice. No loans. Just smart financial planning.

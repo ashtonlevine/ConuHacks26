@@ -34,7 +34,7 @@ export default function ContactPage() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <Card className="border-border">
                 <CardHeader>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10 mb-2">
                     <Mail className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle className="text-lg">Email Support</CardTitle>
@@ -54,7 +54,7 @@ export default function ContactPage() {
 
               <Card className="border-border">
                 <CardHeader>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10 mb-2">
                     <MessageSquare className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle className="text-lg">Feedback</CardTitle>
@@ -74,7 +74,7 @@ export default function ContactPage() {
 
               <Card className="border-border">
                 <CardHeader>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 mb-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10 mb-2">
                     <HelpCircle className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle className="text-lg">FAQ</CardTitle>
