@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { 
   ComposedChart, 
   Bar, 
-  Line,
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -12,20 +11,16 @@ import {
   Legend 
 } from "recharts";
 
-import { createClient } from "@supabase/supabase-js";
-
-// Supabase credentials
-const supabaseUrl = "https://xiwhvyqsxsittqfnvgdf.supabase.co";
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhpd2h2eXFzeHNpdHRxZm52Z2RmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNzQxOTYsImV4cCI6MjA4NDg1MDE5Nn0.BbVIJx1zfHEpC5i9a07nDyVRSvJDiU4OpyV2K9Izn4g";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// ...other imports and setup remain unchanged
-
 type Transaction = {
   amount: number;
   type: "income" | "expense";
   transaction_date: string;
+};
+
+type ChartData = {
+  month: string;
+  income: number;
+  expenses: number;
 };
 
 function getMonthLabel(dateStr: string) {
@@ -34,44 +29,84 @@ function getMonthLabel(dateStr: string) {
 }
 
 export function IncomeExpenseChart() {
-  type ChartData = {
-    month: string;
-    income: number;
-    expenses: number;
-  };
-
   const [data, setData] = useState<ChartData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      const { data: transactions, error } = await supabase
-        .from("transactions")
-        .select("amount, type, transaction_date");
-      if (error) {
-        console.error(error);
-        return;
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Use secure API route instead of direct Supabase access
+        const response = await fetch("/api/transactions");
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            setError("Please log in to view your data");
+            return;
+          }
+          throw new Error("Failed to fetch transactions");
+        }
+
+        const { transactions } = await response.json();
+
+        // Group by month
+        const grouped: { [month: string]: ChartData } = {};
+        transactions.forEach((t: Transaction) => {
+          const month = getMonthLabel(t.transaction_date);
+          if (!grouped[month]) {
+            grouped[month] = { month, income: 0, expenses: 0 };
+          }
+          if (t.type === "income") {
+            grouped[month].income += Number(t.amount);
+          } else if (t.type === "expense") {
+            grouped[month].expenses += Number(t.amount);
+          }
+        });
+
+        // Sort by date
+        const sorted = Object.values(grouped).sort(
+          (a, b) =>
+            new Date("20" + a.month.split(" ")[1] + "-" + a.month.split(" ")[0] + "-01").getTime() -
+            new Date("20" + b.month.split(" ")[1] + "-" + b.month.split(" ")[0] + "-01").getTime()
+        );
+        setData(sorted);
+      } catch (err) {
+        console.error("Error fetching transactions:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
       }
-      const grouped: { [month: string]: ChartData } = {};
-      transactions.forEach((t: Transaction) => {
-        const month = getMonthLabel(t.transaction_date);
-        if (!grouped[month]) {
-          grouped[month] = { month, income: 0, expenses: 0 };
-        }
-        if (t.type === "income") {
-          grouped[month].income += t.amount;
-        } else if (t.type === "expense") {
-          grouped[month].expenses += t.amount;
-        }
-      });
-      const sorted = Object.values(grouped).sort(
-        (a, b) =>
-          new Date("20" + a.month.split(" ")[1] + "-" + a.month.split(" ")[0] + "-01").getTime() -
-          new Date("20" + b.month.split(" ")[1] + "-" + b.month.split(" ")[0] + "-01").getTime()
-      );
-      setData(sorted);
     }
+
     fetchData();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="h-[350px] w-full flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-[350px] w-full flex items-center justify-center">
+        <p className="text-destructive">{error}</p>
+      </div>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <div className="h-[350px] w-full flex items-center justify-center">
+        <p className="text-muted-foreground">No transaction data available.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-[350px] w-full">

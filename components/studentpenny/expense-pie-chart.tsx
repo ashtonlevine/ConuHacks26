@@ -2,20 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { createClient } from "@supabase/supabase-js";
 
 const COLORS = ["#1C8F99", "#63AB9A", "#BCDEF6", "#0D4F55", "#94C1B7"];
-
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-type Expense = {
-  id: number;
-  category: string;
-  amount: number;
-};
 
 export function ExpensePieChart() {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
@@ -26,31 +14,38 @@ export function ExpensePieChart() {
     async function fetchExpenses() {
       setLoading(true);
       setError(null);
-      const { data: expenses, error } = await supabase
-        .from("transactions")
-        .select("category, amount");
 
-      if (error) {
-        setError(error.message);
+      try {
+        // Use secure API route instead of direct Supabase access
+        const response = await fetch("/api/transactions?type=expense");
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            setError("Please log in to view your expenses");
+            return;
+          }
+          throw new Error("Failed to fetch expenses");
+        }
+
+        const { transactions } = await response.json();
+
+        // Group by category and sum amounts
+        const grouped: Record<string, number> = {};
+        transactions.forEach((t: { category: string; amount: number }) => {
+          grouped[t.category] = (grouped[t.category] || 0) + Number(t.amount);
+        });
+
+        // Convert to array and sort by value descending
+        const chartData = Object.entries(grouped)
+          .map(([name, value]) => ({ name, value }))
+          .sort((a, b) => b.value - a.value);
+
+        setData(chartData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Group by category and sum amounts
-      const grouped: Record<string, number> = {};
-      const validExpenses: Expense[] = expenses as Expense[]; // Type assertion to include id
-
-      validExpenses.forEach((exp) => {
-        grouped[exp.category] = (grouped[exp.category] || 0) + exp.amount;
-      });
-
-      // Convert to array and sort by value descending
-      const chartData = Object.entries(grouped)
-        .map(([name, value]) => ({ name, value }))
-        .sort((a, b) => b.value - a.value);
-
-      setData(chartData);
-      setLoading(false);
     }
 
     fetchExpenses();

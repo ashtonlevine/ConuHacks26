@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Send } from "lucide-react";
+import { Sparkles, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAIChat } from "./ai-chat-context";
 
@@ -146,25 +146,36 @@ export function AIChatSidebar() {
       <div
         className={cn(
           "absolute left-0 top-0 bottom-0 flex flex-col border-l border-border bg-card shadow-xl transition-all duration-200",
-          isOpen ? "right-0 opacity-100" : "w-0 min-w-0 overflow-hidden opacity-0 pointer-events-none"
+          isOpen ? "right-2 opacity-100" : "w-0 min-w-0 overflow-hidden opacity-0 pointer-events-none"
         )}
       >
         <div className="flex h-full min-h-0 flex-col">
           {/* Header */}
-          <div className="flex shrink-0 items-center gap-2 border-b border-border px-4 py-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary/10">
-              <Sparkles className="h-4 w-4 text-primary" />
+          <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary/10">
+                <Sparkles className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">AI Assistant</h3>
+                <p className="text-xs text-muted-foreground">Ask about your finances</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-semibold text-foreground">AI Assistant</h3>
-              <p className="text-xs text-muted-foreground">Ask about your finances</p>
-            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={handleTabClick}
+              aria-label="Close AI assistant"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Messages */}
           <div
             ref={listRef}
-            className="flex-1 overflow-y-auto p-4"
+            className="ai-chat-scrollbar flex-1 overflow-y-auto p-4 pr-3"
           >
             {messages.length === 0 && !isThinking && (
               <div className="space-y-3">
@@ -216,7 +227,7 @@ export function AIChatSidebar() {
           </div>
 
           {/* Input */}
-          <div className="shrink-0 border-t border-border p-3 pr-16">
+          <div className="shrink-0 border-t border-border p-3">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -240,19 +251,18 @@ export function AIChatSidebar() {
         </div>
       </div>
 
-      {/* Hover/click tab — bottom-right corner */}
-      <button
-        type="button"
-        onClick={handleTabClick}
-        className={cn(
-          "flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-sm border border-border bg-card shadow-lg transition-colors hover:bg-muted/80",
-          isOpen && "absolute bottom-4 right-4 z-10 bg-muted/50"
-        )}
-        aria-label={isOpen ? "Close AI assistant" : "Open AI assistant"}
-      >
-        <Sparkles className="h-5 w-5 text-primary" />
-        <span className="text-[9px] font-medium text-muted-foreground">AI</span>
-      </button>
+      {/* Hover/click tab — bottom-right corner (hidden when sidebar is open since we have X button in header) */}
+      {!isOpen && (
+        <button
+          type="button"
+          onClick={handleTabClick}
+          className="flex h-11 w-11 shrink-0 flex-col items-center justify-center gap-0.5 rounded-sm border border-border bg-card shadow-lg transition-colors hover:bg-muted/80"
+          aria-label="Open AI assistant"
+        >
+          <Sparkles className="h-5 w-5 text-primary" />
+          <span className="text-[9px] font-medium text-muted-foreground">AI</span>
+        </button>
+      )}
     </div>
   );
 }

@@ -537,15 +537,6 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 w-8 p-0 text-primary hover:text-primary"
-                              onClick={() => handleAnalyzeGoalWithAI(goal)}
-                              title="Analyze with AI"
-                            >
-                              <Sparkles className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
                               className="h-8 w-8 p-0"
                               onClick={() => handleEditGoal(goal)}
                             >
@@ -598,6 +589,17 @@ Please provide practical advice on how I can reach this goal, any tips specific 
                               </p>
                             </div>
                           )}
+                          
+                          {/* Analyze with AI button */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full gap-2"
+                            onClick={() => handleAnalyzeGoalWithAI(goal)}
+                          >
+                            <Sparkles className="h-3.5 w-3.5 text-primary" />
+                            Analyze with AI
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
