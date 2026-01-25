@@ -35,6 +35,9 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { IncomeExpenseChart } from "@/components/studentpenny/income-expense-chart";
+import { ExpensePieChart } from "@/components/studentpenny/expense-pie-chart";
+
 // Summary type
 interface FinancialSummary {
   balance: number;
@@ -326,98 +329,36 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* AI What-If + Quick actions */}
+        {/* Charts */}
         <section className="py-6 sm:py-8">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-6 lg:grid-cols-3">
-              {/* AI What-If */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Bar Chart*/}
               <Card className="border-border bg-card lg:col-span-2">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-foreground">
                     <Sparkles className="h-5 w-5 text-primary" />
-                    AI &quot;What-If&quot; Simulator
+                    Income vs. Expenses
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Ask anything: &quot;Can I afford this trip?&quot; or &quot;What if I cut dining out by 20%?&quot;
+                    Compare your income and expenses over time.
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="e.g. Can I afford a $50 concert ticket?"
-                      value={aiPrompt}
-                      onChange={(e) => setAiPrompt(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && aiPrompt.trim() && !isThinking) {
-                          sendMessage(aiPrompt);
-                          setAiPrompt("");
-                        }
-                      }}
-                      disabled={isThinking}
-                      className="flex-1 rounded-lg border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
-                    />
-                    <Button
-                      onClick={() => {
-                        if (aiPrompt.trim()) {
-                          sendMessage(aiPrompt);
-                          setAiPrompt("");
-                        }
-                      }}
-                      disabled={!aiPrompt.trim() || isThinking}
-                    >
-                      {isThinking ? "Thinking..." : "Ask"}
-                    </Button>
-                  </div>
+                  <IncomeExpenseChart />
                 </CardContent>
               </Card>
 
-              {/* Quick actions */}
+              {/* Pie Chart*/}
               <Card className="border-border bg-card">
                 <CardHeader>
-                  <CardTitle className="text-foreground">Quick actions</CardTitle>
+                  <CardTitle className="text-foreground">Expense Breakdown</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    See how your expenses are distributed across different categories.
+                  </p>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
-                  <Link
-                    href="/dashboard#budget"
-                    className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
-                  >
-                    <span className="flex items-center gap-2 font-medium">
-                      <Wallet className="h-4 w-4 text-primary" />
-                      Budget
-                    </span>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
-                  <Link
-                    href="/dashboard/deals"
-                    className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
-                  >
-                    <span className="flex items-center gap-2 font-medium">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      Deals
-                    </span>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
-                  <Link
-                    href="/dashboard#goals"
-                    className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
-                  >
-                    <span className="flex items-center gap-2 font-medium">
-                      <Target className="h-4 w-4 text-primary" />
-                      Goals
-                    </span>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
-                  <Link
-                    href="/dashboard#goals"
-                    className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3 transition-colors hover:bg-muted"
-                  >
-                    <span className="flex items-center gap-2 font-medium">
-                      <PiggyBank className="h-4 w-4 text-primary" />
-                      Emergency fund
-                    </span>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </Link>
+                  <ExpensePieChart />
                 </CardContent>
               </Card>
             </div>
