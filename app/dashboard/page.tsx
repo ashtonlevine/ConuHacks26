@@ -30,6 +30,7 @@ import {
   Trash2,
   Home,
   MoreHorizontal,
+  Sparkles,
 } from "lucide-react";
 
 import { ChartTabs } from "@/components/studentpenny/chart-tabs";
@@ -181,6 +182,41 @@ export default function DashboardPage() {
   const handleOpenNewGoalModal = () => {
     setEditingGoal(null);
     setGoalModalOpen(true);
+  };
+
+  const handleAnalyzeGoalWithAI = (goal: Goal) => {
+    const progress = goal.target_amount > 0 
+      ? (goal.current_amount / goal.target_amount) * 100 
+      : 0;
+    const remaining = goal.target_amount - goal.current_amount;
+    
+    // Calculate monthly savings needed if target date exists
+    let monthlyInfo = "";
+    if (goal.target_date && remaining > 0) {
+      const targetDate = new Date(goal.target_date);
+      const today = new Date();
+      const monthsRemaining = Math.max(
+        (targetDate.getFullYear() - today.getFullYear()) * 12 +
+          (targetDate.getMonth() - today.getMonth()),
+        1
+      );
+      const monthlySavings = remaining / monthsRemaining;
+      monthlyInfo = `I have ${monthsRemaining} month(s) until my target date (${targetDate.toLocaleDateString()}). I would need to save $${monthlySavings.toFixed(2)} per month to reach this goal.`;
+    }
+
+    const message = `Please analyze my savings goal and give me a solid plan to reach it:
+
+**Goal:** ${goal.name}
+**Category:** ${goal.category.replace(/_/g, " ")}
+**Target Amount:** $${goal.target_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+**Currently Saved:** $${goal.current_amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+**Remaining:** $${remaining.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+**Progress:** ${progress.toFixed(1)}% complete
+${monthlyInfo ? `\n${monthlyInfo}` : goal.target_date ? `\n**Target Date:** ${new Date(goal.target_date).toLocaleDateString()}` : ""}
+
+Please provide practical advice on how I can reach this goal, any tips specific to this type of savings goal, and a realistic action plan.`;
+
+    sendMessage(message);
   };
 
   const handleTransactionSaved = async (transaction: Transaction) => {
@@ -498,6 +534,15 @@ export default function DashboardPage() {
                             {goal.name}
                           </CardTitle>
                           <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-primary hover:text-primary"
+                              onClick={() => handleAnalyzeGoalWithAI(goal)}
+                              title="Analyze with AI"
+                            >
+                              <Sparkles className="h-3.5 w-3.5" />
+                            </Button>
                             <Button
                               variant="ghost"
                               size="sm"

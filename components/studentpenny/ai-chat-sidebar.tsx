@@ -6,6 +6,80 @@ import { Sparkles, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAIChat } from "./ai-chat-context";
 
+// Simple markdown-like formatter for AI responses
+function FormattedMessage({ content, isUser }: { content: string; isUser: boolean }) {
+  if (isUser) {
+    // User messages: just preserve line breaks
+    return (
+      <div className="whitespace-pre-wrap text-sm">
+        {content}
+      </div>
+    );
+  }
+
+  // Format bold text and other inline elements
+  function formatInlineText(text: string): React.ReactNode {
+    // Handle **bold** text
+    const parts = text.split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  }
+
+  // First pass: extract all numbered list items and regular content
+  const lines = content.split('\n');
+  const listItems: { number: number; text: string }[] = [];
+  const introLines: string[] = [];
+  let foundFirstListItem = false;
+
+  lines.forEach((line) => {
+    const trimmedLine = line.trim();
+    const listMatch = trimmedLine.match(/^(\d+)\.\s+(.+)$/);
+    
+    if (listMatch) {
+      foundFirstListItem = true;
+      listItems.push({
+        number: parseInt(listMatch[1], 10),
+        text: listMatch[2]
+      });
+    } else if (!foundFirstListItem && trimmedLine !== '') {
+      // Content before the first list item
+      introLines.push(trimmedLine);
+    }
+    // Ignore empty lines and content after list starts (between items)
+  });
+
+  return (
+    <div className="space-y-3">
+      {/* Intro paragraph(s) */}
+      {introLines.length > 0 && (
+        <div className="space-y-1">
+          {introLines.map((line, i) => (
+            <p key={i} className="text-sm leading-relaxed">
+              {formatInlineText(line)}
+            </p>
+          ))}
+        </div>
+      )}
+      
+      {/* Numbered list */}
+      {listItems.length > 0 && (
+        <ol className="space-y-2.5">
+          {listItems.map((item, i) => (
+            <li key={i} className="flex gap-2 text-sm leading-relaxed">
+              <span className="font-semibold text-primary shrink-0">{i + 1}.</span>
+              <span>{formatInlineText(item.text)}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 const SUGGESTIONS = [
   "Can I afford a $50 concert ticket?",
   "How can I save more this month?",
@@ -119,13 +193,13 @@ export function AIChatSidebar() {
               >
                 <div
                   className={cn(
-                    "max-w-[85%] rounded-sm px-3 py-2 text-sm",
+                    "max-w-[85%] rounded-sm px-3 py-2",
                     m.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-foreground"
                   )}
                 >
-                  {m.content}
+                  <FormattedMessage content={m.content} isUser={m.role === "user"} />
                 </div>
               </div>
             ))}
