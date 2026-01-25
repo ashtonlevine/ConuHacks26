@@ -5,6 +5,14 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recha
 import { useTimePeriod } from "./time-period-context";
 
 const COLORS = ["#1C8F99", "#63AB9A", "#BCDEF6", "#0D4F55", "#94C1B7"];
+const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  restaurant_expenses: "Restaurants",
+  gas: "Gas",
+  grocery_shopping: "Groceries",
+  leisure: "Leisure",
+  school_fees: "School",
+  rent: "Rent",
+};
 
 export function ExpensePieChart() {
   const [data, setData] = useState<{ name: string; value: number }[]>([]);
@@ -19,13 +27,7 @@ export function ExpensePieChart() {
       setError(null);
 
       try {
-        // Use secure API route with date range filtering
-        const params = new URLSearchParams({
-          type: "expense",
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate,
-        });
-        const response = await fetch(`/api/transactions?${params}`);
+        const response = await fetch("/api/transactions?type=expense");
 
         if (!response.ok) {
           if (response.status === 401) {
@@ -37,10 +39,13 @@ export function ExpensePieChart() {
 
         const { transactions } = await response.json();
 
-        // Group by category and sum amounts
+        // Group by display category and sum amounts
         const grouped: Record<string, number> = {};
         transactions.forEach((t: { category: string; amount: number }) => {
-          grouped[t.category] = (grouped[t.category] || 0) + Number(t.amount);
+          // Normalize and map category
+          const raw = (t.category || "").toLowerCase().trim();
+          const display = CATEGORY_DISPLAY_NAMES[raw] || "Other";
+          grouped[display] = (grouped[display] || 0) + Number(t.amount);
         });
 
         // Convert to array and sort by value descending
@@ -57,7 +62,7 @@ export function ExpensePieChart() {
     }
 
     fetchExpenses();
-  }, [dateRange.startDate, dateRange.endDate]);
+  }, []);
 
   if (loading) return <div className="h-[350px] w-full flex items-center justify-center text-muted-foreground">Loading...</div>;
   if (error) return <div className="h-[350px] w-full flex items-center justify-center text-destructive">Error: {error}</div>;
