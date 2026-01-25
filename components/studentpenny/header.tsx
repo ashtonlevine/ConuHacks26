@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
@@ -48,6 +49,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           <SignedOut>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/login">Log in</Link>
@@ -110,6 +112,10 @@ export function Header() {
               About
             </Link>
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
               <SignedOut>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/login">Log in</Link>

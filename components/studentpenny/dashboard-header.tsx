@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Menu, X, LayoutDashboard, Wallet, MapPin } from "lucide-react";
 import Image from "next/image";
 
@@ -54,6 +55,7 @@ export function DashboardHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <ThemeToggle />
           <Button variant="outline" size="sm" asChild>
             <Link href="/">Home</Link>
           </Button>
@@ -96,6 +98,10 @@ export function DashboardHeader() {
               </Link>
             ))}
             <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/">Home</Link>
               </Button>
