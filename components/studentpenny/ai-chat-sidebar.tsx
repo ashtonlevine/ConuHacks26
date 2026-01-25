@@ -92,8 +92,6 @@ export function AIChatSidebar() {
         "fixed z-[100]",
         isOpen ? "right-0 top-0 bottom-0 w-[360px] sm:w-[380px]" : "bottom-4 right-4 h-11 w-11"
       )}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Sidebar panel */}
       <div
