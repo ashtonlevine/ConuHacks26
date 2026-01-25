@@ -31,7 +31,6 @@ export function Hero() {
           <p className="mt-6 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Plan your money around semesters, tuition, and part-time income — not generic monthly budgets.
           </p>
-
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button size="lg" className="w-full sm:w-auto" asChild>
               <Link href="/dashboard">
@@ -44,46 +43,183 @@ export function Hero() {
             </Button>
           </div>
         </div>
-
-        <div className="mt-16 sm:mt-20">
-          <div className="relative mx-auto max-w-4xl">
-            <div className="aspect-[16/10] overflow-hidden rounded-sm border border-border bg-muted/50 shadow-2xl shadow-primary/10">
-              <div className="flex h-full flex-col">
-                <div className="flex items-center gap-2 border-b border-border bg-card px-4 py-3">
-                  <div className="h-3 w-3 rounded-sm bg-destructive/60" />
-                  <div className="h-3 w-3 rounded-sm bg-chart-4/60" />
-                  <div className="h-3 w-3 rounded-sm bg-primary/60" />
-                  <div className="ml-4 h-5 w-48 rounded-sm bg-muted" />
-                </div>
-                <div className="flex flex-1 gap-4 p-6">
-                  <div className="flex w-1/3 flex-col gap-4">
-                    <div className="rounded-sm border border-border bg-card p-4">
-                      <div className="mb-2 h-4 w-20 rounded-sm bg-muted" />
-                      <div className="h-8 w-28 rounded-sm bg-primary/20 text-2xl font-bold text-primary" />
-                    </div>
-                    <div className="rounded-sm border border-border bg-card p-4">
-                      <div className="mb-2 h-4 w-24 rounded-sm bg-muted" />
-                      <div className="space-y-2">
-                        <div className="h-3 w-full rounded-sm bg-muted" />
-                        <div className="h-3 w-3/4 rounded-sm bg-muted" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-1 rounded-sm border border-border bg-card p-4">
-                    <div className="mb-4 h-4 w-32 rounded-sm bg-muted" />
-                    <div className="flex h-32 items-end gap-2">
-                      <div className="h-1/2 flex-1 rounded-t-sm bg-primary/30" />
-                      <div className="h-3/4 flex-1 rounded-t-sm bg-primary/50" />
-                      <div className="h-full flex-1 rounded-t-sm bg-primary/70" />
-                      <div className="h-2/3 flex-1 rounded-t-sm bg-primary/50" />
-                      <div className="h-1/3 flex-1 rounded-t-sm bg-primary/30" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Light Mode Carousel */}
+        <div className="relative mt-8 block dark:hidden" id="light-mode-carousel">
+          {/* Carousel Images */}
+          <div className="relative w-full flex justify-center items-center" style={{ minHeight: 320 }}>
+            {[
+              '/Light Mode/Overview-Light.png',
+              '/Light Mode/Budget-Light.png',
+              '/Light Mode/Category-Breakdown-Light.png',
+              '/Light Mode/Savings-Goals-Light.png',
+            ].map((src, idx) => (
+              <Image
+                key={src}
+                src={src}
+                alt={`StudentPenny Light Mode Screenshot ${idx + 1}`}
+                width={900}
+                height={500}
+                className={`rounded-xl shadow-xl object-contain absolute left-1/2 top-0 -translate-x-1/2 transition-opacity duration-300 ${idx === 0 ? 'opacity-100' : 'opacity-0'}`}
+                data-carousel-img={idx}
+                style={{ pointerEvents: 'none' }} // Prevents images from blocking button clicks
+              />
+            ))}
+            {/* Arrow buttons for desktop */}
+            <button
+              type="button"
+              id="carousel-left"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow hover:bg-white"
+              aria-label="Previous"
+              style={{ zIndex: 20 }}
+            >&#8592;</button>
+            <button
+              type="button"
+              id="carousel-right"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow hover:bg-white"
+              aria-label="Next"
+              style={{ zIndex: 20 }}
+            >&#8594;</button>
           </div>
         </div>
+        {/* Dark Mode Carousel */}
+        <div className="relative mt-8 hidden dark:block" id="dark-mode-carousel">
+          {/* Carousel Images */}
+          <div className="relative w-full flex justify-center items-center" style={{ minHeight: 320 }}>
+            {[
+              '/Dark Mode/Overview-Dark.png',
+              '/Dark Mode/Budget-Dark.png',
+              '/Dark Mode/Category-Breakdown-Dark.png',
+              '/Dark Mode/Savings-Goals-Dark.png',
+            ].map((src, idx) => (
+              <Image
+                key={src}
+                src={src}
+                alt={`StudentPenny Dark Mode Screenshot ${idx + 1}`}
+                width={900}
+                height={500}
+                className={`rounded-xl shadow-xl object-contain absolute left-1/2 top-0 -translate-x-1/2 transition-opacity duration-300 ${idx === 0 ? 'opacity-100' : 'opacity-0'}`}
+                data-carousel-img={idx}
+                style={{ pointerEvents: 'none' }}
+              />
+            ))}
+            {/* Arrow buttons for desktop */}
+            <button
+              type="button"
+              id="carousel-left-dark"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow hover:bg-white"
+              aria-label="Previous"
+              style={{ zIndex: 20 }}
+            >&#8592;</button>
+            <button
+              type="button"
+              id="carousel-right-dark"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-2 shadow hover:bg-white"
+              aria-label="Next"
+              style={{ zIndex: 20 }}
+            >&#8594;</button>
+          </div>
+        </div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                if (typeof window === 'undefined') return;
+                // Light mode carousel
+                (function() {
+                  let current = 0;
+                  const imgs = Array.from(document.querySelectorAll('#light-mode-carousel [data-carousel-img]'));
+                  let xDown = null;
+                  function show(idx) {
+                    imgs.forEach((img, i) => {
+                      img.style.opacity = i === idx ? '1' : '0';
+                    });
+                  }
+                  function handleTouchStart(evt) {
+                    xDown = evt.touches[0].clientX;
+                  }
+                  function handleTouchEnd(evt) {
+                    if (!xDown) return;
+                    let xUp = evt.changedTouches[0].clientX;
+                    let xDiff = xDown - xUp;
+                    if (Math.abs(xDiff) > 50) {
+                      if (xDiff > 0) current = (current + 1) % imgs.length;
+                      else current = (current - 1 + imgs.length) % imgs.length;
+                      show(current);
+                    }
+                    xDown = null;
+                  }
+                  const carousel = document.getElementById('light-mode-carousel');
+                  if (carousel) {
+                    carousel.addEventListener('touchstart', handleTouchStart, false);
+                    carousel.addEventListener('touchend', handleTouchEnd, false);
+                    show(current);
+                    // Arrow button support
+                    const left = document.getElementById('carousel-left');
+                    const right = document.getElementById('carousel-right');
+                    if (left && right) {
+                      left.onclick = function(e) {
+                        e.stopPropagation();
+                        current = (current - 1 + imgs.length) % imgs.length;
+                        show(current);
+                      };
+                      right.onclick = function(e) {
+                        e.stopPropagation();
+                        current = (current + 1) % imgs.length;
+                        show(current);
+                      };
+                    }
+                  }
+                })();
+                // Dark mode carousel
+                (function() {
+                  let current = 0;
+                  const imgs = Array.from(document.querySelectorAll('#dark-mode-carousel [data-carousel-img]'));
+                  let xDown = null;
+                  function show(idx) {
+                    imgs.forEach((img, i) => {
+                      img.style.opacity = i === idx ? '1' : '0';
+                    });
+                  }
+                  function handleTouchStart(evt) {
+                    xDown = evt.touches[0].clientX;
+                  }
+                  function handleTouchEnd(evt) {
+                    if (!xDown) return;
+                    let xUp = evt.changedTouches[0].clientX;
+                    let xDiff = xDown - xUp;
+                    if (Math.abs(xDiff) > 50) {
+                      if (xDiff > 0) current = (current + 1) % imgs.length;
+                      else current = (current - 1 + imgs.length) % imgs.length;
+                      show(current);
+                    }
+                    xDown = null;
+                  }
+                  const carousel = document.getElementById('dark-mode-carousel');
+                  if (carousel) {
+                    carousel.addEventListener('touchstart', handleTouchStart, false);
+                    carousel.addEventListener('touchend', handleTouchEnd, false);
+                    show(current);
+                    // Arrow button support
+                    const left = document.getElementById('carousel-left-dark');
+                    const right = document.getElementById('carousel-right-dark');
+                    if (left && right) {
+                      left.onclick = function(e) {
+                        e.stopPropagation();
+                        current = (current - 1 + imgs.length) % imgs.length;
+                        show(current);
+                      };
+                      right.onclick = function(e) {
+                        e.stopPropagation();
+                        current = (current + 1) % imgs.length;
+                        show(current);
+                      };
+                    }
+                  }
+                })();
+              })();
+            `,
+          }}
+        ></script>
       </div>
     </section>
   );
