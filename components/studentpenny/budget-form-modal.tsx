@@ -22,6 +22,8 @@ import {
   ShoppingCart,
   Gamepad2,
   GraduationCap,
+  Home,
+  MoreHorizontal,
   Loader2,
 } from "lucide-react";
 
@@ -31,6 +33,8 @@ const budgetSchema = z.object({
   grocery_shopping: z.coerce.number().min(0, "Must be 0 or greater"),
   leisure: z.coerce.number().min(0, "Must be 0 or greater"),
   school_fees: z.coerce.number().min(0, "Must be 0 or greater"),
+  rent: z.coerce.number().min(0, "Must be 0 or greater"),
+  other: z.coerce.number().min(0, "Must be 0 or greater"),
 });
 
 type BudgetFormData = z.infer<typeof budgetSchema>;
@@ -43,6 +47,8 @@ export interface Budget {
   grocery_shopping: number;
   leisure: number;
   school_fees: number;
+  rent: number;
+  other: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -85,6 +91,18 @@ const budgetCategories = [
     description: "Tuition, books, supplies, course materials",
     icon: GraduationCap,
   },
+  {
+    name: "rent" as const,
+    label: "Rent",
+    description: "Monthly rent or housing payments",
+    icon: Home,
+  },
+  {
+    name: "other" as const,
+    label: "Other",
+    description: "Miscellaneous expenses",
+    icon: MoreHorizontal,
+  },
 ];
 
 export function BudgetFormModal({
@@ -108,6 +126,8 @@ export function BudgetFormModal({
       grocery_shopping: 0,
       leisure: 0,
       school_fees: 0,
+      rent: 0,
+      other: 0,
     },
   });
 
@@ -120,6 +140,8 @@ export function BudgetFormModal({
         grocery_shopping: existingBudget?.grocery_shopping || 0,
         leisure: existingBudget?.leisure || 0,
         school_fees: existingBudget?.school_fees || 0,
+        rent: existingBudget?.rent || 0,
+        other: existingBudget?.other || 0,
       });
     }
   }, [open, existingBudget, reset]);

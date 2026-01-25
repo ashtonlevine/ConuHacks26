@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { restaurant_expenses, gas, grocery_shopping, leisure, school_fees } = body;
+    const { restaurant_expenses, gas, grocery_shopping, leisure, school_fees, rent, other } = body;
 
     const supabase = await createClient();
     
@@ -66,6 +66,8 @@ export async function POST(request: Request) {
           grocery_shopping: grocery_shopping || 0,
           leisure: leisure || 0,
           school_fees: school_fees || 0,
+          rent: rent || 0,
+          other: other || 0,
           updated_at: new Date().toISOString(),
         },
         {

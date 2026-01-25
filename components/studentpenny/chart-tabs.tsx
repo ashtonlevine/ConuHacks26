@@ -3,19 +3,28 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, PieChart } from "lucide-react";
+import { Sparkles, PieChart, LayoutGrid } from "lucide-react";
 import { IncomeExpenseChart } from "./income-expense-chart";
 import { ExpensePieChart } from "./expense-pie-chart";
+import { CategoryBreakdown } from "./category-breakdown";
 
-type ChartTab = "income-expense" | "expense-breakdown";
+type ChartTab = "income-expense" | "expense-breakdown" | "category-breakdown";
 
 export function ChartTabs() {
-  const [activeTab, setActiveTab] = useState<ChartTab>("income-expense");
+  const [activeTab, setActiveTab] = useState<ChartTab>("category-breakdown");
 
   return (
     <div className="space-y-4">
       {/* Tab Buttons */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant={activeTab === "category-breakdown" ? "default" : "outline"}
+          onClick={() => setActiveTab("category-breakdown")}
+          className="flex items-center gap-2"
+        >
+          <LayoutGrid className="h-4 w-4" />
+          Category Breakdown
+        </Button>
         <Button
           variant={activeTab === "income-expense" ? "default" : "outline"}
           onClick={() => setActiveTab("income-expense")}
@@ -39,12 +48,35 @@ export function ChartTabs() {
         <div
           className="flex transition-transform duration-500 ease-in-out"
           style={{
-            transform: activeTab === "income-expense" ? "translateX(0)" : "translateX(-50%)",
-            width: "200%",
+            transform:
+              activeTab === "category-breakdown"
+                ? "translateX(0)"
+                : activeTab === "income-expense"
+                ? "translateX(-33.33%)"
+                : "translateX(-66.67%)",
+            width: "300%",
           }}
         >
-          {/* Income & Expenses Chart - slides from left */}
-          <div className="w-1/2 flex-shrink-0">
+          {/* Category Breakdown */}
+          <div className="w-1/3 flex-shrink-0">
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <LayoutGrid className="h-5 w-5 text-primary" />
+                  Category Breakdown
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Track spending vs budget for each category.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <CategoryBreakdown />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Income & Expenses Chart */}
+          <div className="w-1/3 flex-shrink-0">
             <Card className="border-border bg-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-foreground">
@@ -61,8 +93,8 @@ export function ChartTabs() {
             </Card>
           </div>
 
-          {/* Expense Breakdown Chart - slides from right */}
-          <div className="w-1/2 flex-shrink-0">
+          {/* Expense Breakdown Chart */}
+          <div className="w-1/3 flex-shrink-0">
             <Card className="border-border bg-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-foreground">
