@@ -6,14 +6,15 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Menu, X, LayoutDashboard, Wallet, MapPin, ChartArea} from "lucide-react";
+import { Menu, X, LayoutDashboard, Wallet, MapPin, ChartArea, Target} from "lucide-react";
 import Image from "next/image";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard#budget", label: "Budget", icon: Wallet },
   { href: "/dashboard#deals", label: "Deals", icon: MapPin },
   { href: "/dashboard#analytics", label: "Analytics", icon: ChartArea },
+  { href: "/dashboard#goals", label: "Goals", icon: Target },
   { href: "/transactions", label: "Transactions", icon: ChartArea },
 ];
 
@@ -43,7 +44,7 @@ export function DashboardHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 rounded-sm px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -92,7 +93,7 @@ export function DashboardHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <item.icon className="h-4 w-4" />

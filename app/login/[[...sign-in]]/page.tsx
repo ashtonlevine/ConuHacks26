@@ -18,11 +18,11 @@ export default function LoginPage() {
             colorBackground: 'var(--card)',
             colorInputBackground: 'var(--muted)',
             colorInputText: 'var(--foreground)',
-            borderRadius: '0.625rem',
+            borderRadius: '0.125rem',
           },
           elements: {
             rootBox: "mx-auto w-full max-w-md",
-            card: "bg-card border border-border shadow-xl rounded-xl",
+            card: "bg-card border border-border shadow-xl rounded-sm",
             headerTitle: "text-foreground font-semibold",
             headerSubtitle: "text-muted-foreground",
             socialButtonsBlockButton: "bg-muted hover:bg-muted/80 border border-border text-foreground transition-colors",

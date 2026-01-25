@@ -6,8 +6,8 @@ export function Hero() {
     <section className="relative overflow-hidden py-20 sm:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm">
-            <span className="h-2 w-2 rounded-full bg-accent" />
+          <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-border bg-card px-4 py-1.5 text-sm">
+            <span className="h-2 w-2 rounded-sm bg-accent" />
             <span className="text-muted-foreground">Now with AI-powered automation</span>
           </div>
 

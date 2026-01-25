@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export function Hero() {
@@ -12,13 +12,12 @@ export function Hero() {
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-sm text-muted-foreground">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span>AI-powered financial guidance</span>
-          </div>
+          <p className="mb-4 text-sm font-medium uppercase tracking-widest text-primary">
+            Free for students — Smart for sponsors
+          </p>
 
           <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            AI Financial Guidance Built for Student Life
+            Finally, a Budget That Gets Student Life
           </h1>
 
           <p className="mt-6 text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">
@@ -43,36 +42,36 @@ export function Hero() {
 
         <div className="mt-16 sm:mt-20">
           <div className="relative mx-auto max-w-4xl">
-            <div className="aspect-[16/10] overflow-hidden rounded-xl border border-border bg-muted/50 shadow-2xl shadow-primary/10">
+            <div className="aspect-[16/10] overflow-hidden rounded-sm border border-border bg-muted/50 shadow-2xl shadow-primary/10">
               <div className="flex h-full flex-col">
                 <div className="flex items-center gap-2 border-b border-border bg-card px-4 py-3">
-                  <div className="h-3 w-3 rounded-full bg-destructive/60" />
-                  <div className="h-3 w-3 rounded-full bg-chart-4/60" />
-                  <div className="h-3 w-3 rounded-full bg-primary/60" />
-                  <div className="ml-4 h-5 w-48 rounded bg-muted" />
+                  <div className="h-3 w-3 rounded-sm bg-destructive/60" />
+                  <div className="h-3 w-3 rounded-sm bg-chart-4/60" />
+                  <div className="h-3 w-3 rounded-sm bg-primary/60" />
+                  <div className="ml-4 h-5 w-48 rounded-sm bg-muted" />
                 </div>
                 <div className="flex flex-1 gap-4 p-6">
                   <div className="flex w-1/3 flex-col gap-4">
-                    <div className="rounded-lg border border-border bg-card p-4">
-                      <div className="mb-2 h-4 w-20 rounded bg-muted" />
-                      <div className="h-8 w-28 rounded bg-primary/20 text-2xl font-bold text-primary" />
+                    <div className="rounded-sm border border-border bg-card p-4">
+                      <div className="mb-2 h-4 w-20 rounded-sm bg-muted" />
+                      <div className="h-8 w-28 rounded-sm bg-primary/20 text-2xl font-bold text-primary" />
                     </div>
-                    <div className="rounded-lg border border-border bg-card p-4">
-                      <div className="mb-2 h-4 w-24 rounded bg-muted" />
+                    <div className="rounded-sm border border-border bg-card p-4">
+                      <div className="mb-2 h-4 w-24 rounded-sm bg-muted" />
                       <div className="space-y-2">
-                        <div className="h-3 w-full rounded bg-muted" />
-                        <div className="h-3 w-3/4 rounded bg-muted" />
+                        <div className="h-3 w-full rounded-sm bg-muted" />
+                        <div className="h-3 w-3/4 rounded-sm bg-muted" />
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 rounded-lg border border-border bg-card p-4">
-                    <div className="mb-4 h-4 w-32 rounded bg-muted" />
+                  <div className="flex-1 rounded-sm border border-border bg-card p-4">
+                    <div className="mb-4 h-4 w-32 rounded-sm bg-muted" />
                     <div className="flex h-32 items-end gap-2">
-                      <div className="h-1/2 flex-1 rounded-t bg-primary/30" />
-                      <div className="h-3/4 flex-1 rounded-t bg-primary/50" />
-                      <div className="h-full flex-1 rounded-t bg-primary/70" />
-                      <div className="h-2/3 flex-1 rounded-t bg-primary/50" />
-                      <div className="h-1/3 flex-1 rounded-t bg-primary/30" />
+                      <div className="h-1/2 flex-1 rounded-t-sm bg-primary/30" />
+                      <div className="h-3/4 flex-1 rounded-t-sm bg-primary/50" />
+                      <div className="h-full flex-1 rounded-t-sm bg-primary/70" />
+                      <div className="h-2/3 flex-1 rounded-t-sm bg-primary/50" />
+                      <div className="h-1/3 flex-1 rounded-t-sm bg-primary/30" />
                     </div>
                   </div>
                 </div>

@@ -74,7 +74,7 @@ export function Pricing() {
             <div
               key={plan.name}
               className={cn(
-                "relative flex flex-col rounded-xl border bg-background p-8",
+                "relative flex flex-col rounded-sm border bg-background p-8",
                 plan.popular
                   ? "border-primary shadow-lg ring-1 ring-primary"
                   : "border-border"
@@ -82,7 +82,7 @@ export function Pricing() {
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                  <span className="rounded-sm bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
                     Most Popular
                   </span>
                 </div>

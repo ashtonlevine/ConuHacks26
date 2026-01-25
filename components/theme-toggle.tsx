@@ -15,7 +15,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     return (
       <button 
         className={cn(
-          "relative flex h-10 w-10 items-center justify-center rounded-full bg-muted/50 transition-all",
+          "relative flex h-10 w-10 items-center justify-center rounded-sm bg-muted/50 transition-all",
           className
         )} 
         aria-label="Toggle theme"
@@ -33,7 +33,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
       className={cn(
-        "relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300",
+        "relative flex h-10 w-10 items-center justify-center rounded-sm transition-all duration-300",
         "hover:scale-110 active:scale-95",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         isDark 
@@ -43,7 +43,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       )}
     >
       <span className={cn(
-        "absolute inset-0 rounded-full transition-opacity duration-300",
+        "absolute inset-0 rounded-sm transition-opacity duration-300",
         isDark ? "bg-gradient-to-br from-slate-700 to-slate-900" : "bg-gradient-to-br from-sky-50 to-sky-100"
       )} />
       

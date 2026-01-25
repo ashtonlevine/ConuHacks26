@@ -219,7 +219,7 @@ export function GoalFormModal({
                       key={cat.value}
                       type="button"
                       onClick={() => handleCategorySelect(cat.value)}
-                      className={`flex items-center gap-2 rounded-lg border p-3 text-left transition-colors ${
+                      className={`flex items-center gap-2 rounded-sm border p-3 text-left transition-colors ${
                         selectedCategory === cat.value
                           ? "border-primary bg-primary/10"
                           : "border-border hover:border-primary/50"

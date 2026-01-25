@@ -51,7 +51,7 @@ export default function AboutPage() {
               <Card className="border-border">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10">
                       <Target className="h-5 w-5 text-primary" />
                     </div>
                     <h3 className="font-semibold text-foreground">Student-First Design</h3>
@@ -65,7 +65,7 @@ export default function AboutPage() {
               <Card className="border-border">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10">
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
                     <h3 className="font-semibold text-foreground">AI That Explains</h3>
@@ -79,7 +79,7 @@ export default function AboutPage() {
               <Card className="border-border">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10">
                       <Heart className="h-5 w-5 text-primary" />
                     </div>
                     <h3 className="font-semibold text-foreground">No Judgment</h3>
@@ -93,7 +93,7 @@ export default function AboutPage() {
               <Card className="border-border">
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <h3 className="font-semibold text-foreground">Community Focus</h3>
